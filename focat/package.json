@@ -1,0 +1,41 @@
+{
+  "name": "focat",
+  "version": "1.0.0",
+  "description": "ADHD focus timer with AI task decomposition and a pixel cat chef",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
+    "build": "vite build && electron-builder",
+    "build:mac": "vite build && electron-builder --mac",
+    "build:win": "vite build && electron-builder --win",
+    "build:linux": "vite build && electron-builder --linux",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "howler": "^2.2.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^9.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "framer-motion": "^11.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "vite": "^5.0.0",
+    "vite-plugin-electron": "^0.29.0",
+    "wait-on": "^8.0.0"
+  },
+  "build": {
+    "appId": "com.focat.app",
+    "productName": "focat",
+    "icon": "public/icon.png",
+    "files": ["dist/**/*", "electron/**/*", "public/**/*"],
+    "extraResources": [{ "from": "public/sounds", "to": "sounds" }],
+    "mac": { "category": "public.app-category.productivity", "target": ["dmg"] },
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
+    "linux": { "target": ["AppImage"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}

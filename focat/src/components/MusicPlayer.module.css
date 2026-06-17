@@ -1,0 +1,83 @@
+.playerWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.playBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: transform .1s;
+}
+.playBtn:hover {
+  transform: scale(1.08);
+}
+.playBtn:active {
+  transform: scale(0.96);
+}
+
+.capsule {
+  background: #FFFFFF;
+  border-radius: 30px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  width: 195px;
+  flex-shrink: 0;
+}
+
+.trackName {
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5C4400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 85px;
+}
+
+.navBtns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navBtn {
+  background: none;
+  border: none;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #5C4400;
+  transition: all .12s ease;
+}
+
+.navBtn:hover {
+  opacity: 0.8;
+  transform: scale(1.15);
+}
+
+.navBtn:active {
+  transform: scale(0.92);
+}
+
+.shuffled {
+  color: #EFCB00;
+  filter: drop-shadow(0 0 1px rgba(239, 203, 0, 0.6));
+}

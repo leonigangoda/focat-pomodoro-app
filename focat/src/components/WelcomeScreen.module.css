@@ -1,0 +1,200 @@
+.screen {
+  width: 100%; height: 100%;
+  background: #FFE656;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 560px;
+  width: 100%;
+}
+
+/* Step indicator dots */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 4px 0 6px;
+}
+
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #EFCB00;
+  transition: background .3s, transform .3s;
+}
+
+.dotActive {
+  background: #9F8700;
+  transform: scale(1.15);
+}
+
+.dotLine {
+  width: 32px; height: 2.5px;
+  background: #EFCB00;
+  border-radius: 2px;
+}
+
+/* Animated content area */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  animation: slideIn .35s ease both;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  font-family: 'Gaegu', cursive;
+  font-size: 28px;
+  font-weight: 700;
+  color: #5C4400;
+  text-align: center;
+}
+
+.sub {
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  color: #9F8700;
+  text-align: center;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+.sub strong {
+  color: #5C4400;
+  font-weight: 700;
+}
+
+.input {
+  width: 100%;
+  max-width: 360px;
+  padding: 12px 20px;
+  border: 2.5px solid #EFCB00;
+  border-radius: 30px;
+  background: #FFFFFF;
+  font-family: 'Gaegu', cursive;
+  font-size: 16px;
+  color: #5C4400;
+  outline: none;
+  text-align: center;
+  transition: border-color .2s;
+}
+.input:focus { border-color: #9F8700; }
+.input::placeholder { color: #C8A820; }
+
+.patterns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.patternCard {
+  min-height: 92px;
+  padding: 12px 14px;
+  border: 2.5px solid #EFCB00;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #5C4400;
+  font-family: 'Gaegu', cursive;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.patternCard:hover {
+  background: #FFF8D0;
+  border-color: #9F8700;
+  transform: translateY(-1px);
+}
+.patternCardActive {
+  background: #FFF8D0;
+  border-color: #5C4400;
+}
+.patternName {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.patternDescription {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.25;
+  color: #8A7000;
+}
+
+.btnRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  background: #9F8700;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 36px;
+  font-family: 'Gaegu', cursive;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn:hover:not(:disabled) { opacity: .85; transform: scale(1.02); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.btnBack {
+  background: transparent;
+  color: #9F8700;
+  border: 2px solid #EFCB00;
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.btnBack:hover:not(:disabled) { border-color: #9F8700; }
+.btnBack:disabled { opacity: .5; cursor: not-allowed; }
+
+.error {
+  font-family: 'Gaegu', cursive;
+  font-size: 13px;
+  color: #C03030;
+  background: #FFE0E0;
+  border-radius: 12px;
+  padding: 6px 16px;
+  text-align: center;
+}
+
+.note {
+  font-family: 'Gaegu', cursive;
+  font-size: 12px;
+  color: #B89030;
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+@media (max-width: 560px) {
+  .screen { padding: 24px; }
+  .patterns { grid-template-columns: 1fr; }
+  .patternCard { min-height: auto; }
+}

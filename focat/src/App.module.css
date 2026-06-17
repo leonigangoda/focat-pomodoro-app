@@ -1,0 +1,93 @@
+.app {
+  width: 100%;
+  height: 100%;
+  background: #FFE656;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  padding: 10px 0 4px;
+  flex-shrink: 0;
+}
+
+.time {
+  font-family: 'Gaegu', cursive;
+  font-size: 52px;
+  font-weight: 700;
+  color: #9F8700;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.date {
+  font-family: 'Gaegu', cursive;
+  font-size: 16px;
+  font-weight: 700;
+  color: #9F8700;
+  margin-top: 4px;
+  letter-spacing: .5px;
+}
+
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 12px 20px 18px;
+  overflow: hidden;
+}
+
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.timerBox {
+  background: #FFEA60;
+  border: 2.5px solid #FFEF95;
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.musicBox {
+  background: #5C4400;
+  border-radius: 20px;
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.taskBox {
+  background: #EFCB00;
+  border: 2.5px solid #FFEF95;
+  border-radius: 18px;
+  padding: 12px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}

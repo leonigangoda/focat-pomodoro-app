@@ -1,0 +1,91 @@
+.clockContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.wrap {
+  position: relative;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+.ring {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.timerDigits {
+  font-family: 'Gaegu', cursive;
+  font-size: 52px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.gold { color: #9F8700; }
+.red  { color: #C8320A; }
+
+.ringAlert {
+  animation: ringPulse 1s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .4; }
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.controlBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid #FFEF95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5C4400;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease;
+}
+
+.controlBtn:hover:not(:disabled) {
+  transform: scale(1.08);
+  background: #FFFCEB;
+  border-color: #EFCB00;
+  color: #9F8700;
+}
+
+.controlBtn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.controlBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
