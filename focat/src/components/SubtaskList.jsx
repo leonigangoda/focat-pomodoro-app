@@ -58,6 +58,7 @@ export default function SubtaskList({
           <div
             key={sub.id}
             className={`${styles.card} ${isActive ? styles.active : ''} ${isDone ? styles.done : ''} fade-in`}
+            data-click-feedback={!isDone && !isEditing ? 'true' : undefined}
             onClick={() => !isDone && !isEditing && onStart(sub.taskId, sub)}
           >
             {/* Delete button */}

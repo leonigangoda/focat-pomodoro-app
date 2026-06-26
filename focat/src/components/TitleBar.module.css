@@ -61,7 +61,10 @@
   line-height: 1;
 }
 .winBtn:hover { opacity: .75; transform: scale(1.08); }
-.winBtn:active { transform: scale(.94); }
+.winBtn:active {
+  transform: translateY(3px) scale(.94);
+  box-shadow: inset 0 2px 0 rgba(92, 68, 0, 0.18);
+}
 
 .minimize { background: #FFE656; }
 .close    { background: #FF7A5C; color: #8B1A08; border-color: rgba(139,26,8,.25); }

@@ -24,12 +24,12 @@ export default function MusicPlayer({
       {/* White circle play button */}
       <button className={styles.playBtn} onClick={toggle} title={playing ? 'Pause' : 'Play'}>
         {playing ? (
-          <svg width="10" height="12" viewBox="0 0 10 12">
+          <svg width="14" height="16.8" viewBox="0 0 10 12">
             <rect x="0" y="0" width="3.5" height="12" rx="1" fill="#EFCB00"/>
             <rect x="6.5" y="0" width="3.5" height="12" rx="1" fill="#EFCB00"/>
           </svg>
         ) : (
-          <svg width="12" height="14" viewBox="0 0 12 14">
+          <svg width="16.8" height="19.6" viewBox="0 0 12 14">
             <polygon points="0,0 12,7 0,14" fill="#EFCB00"/>
           </svg>
         )}
@@ -48,7 +48,7 @@ export default function MusicPlayer({
             onClick={toggleShuffle} 
             title="Shuffle"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
               <path d="M2 11 L5 11 L9 3 L12 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M2 3 L5 3 L6.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M7.5 8 L9 11 L12 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -59,7 +59,7 @@ export default function MusicPlayer({
           
           {/* Prev */}
           <button className={styles.navBtn} onClick={prev} title="Previous">
-            <svg width="12" height="12" viewBox="0 0 12 12">
+            <svg width="16" height="16" viewBox="0 0 12 12">
               <polygon points="11,1 3,6 11,11" fill="currentColor"/>
               <rect x="0" y="1" width="2" height="10" rx="0.5" fill="currentColor"/>
             </svg>
@@ -67,7 +67,7 @@ export default function MusicPlayer({
 
           {/* Next */}
           <button className={styles.navBtn} onClick={next} title="Next">
-            <svg width="12" height="12" viewBox="0 0 12 12">
+            <svg width="16" height="16" viewBox="0 0 12 12">
               <polygon points="1,1 9,6 1,11" fill="currentColor"/>
               <rect x="10" y="1" width="2" height="10" rx="0.5" fill="currentColor"/>
             </svg>

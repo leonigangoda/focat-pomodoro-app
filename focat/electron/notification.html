@@ -99,7 +99,7 @@
       font-size: 16px;
       font-weight: 700;
       color: #5C4400;
-      line-height: 1.4;
+      line-height: 1.15;
       letter-spacing: 0.3px;
     }
 
@@ -203,8 +203,8 @@
         audioEl.play().catch(() => {})
       }
 
-      // Auto-dismiss after 15 seconds (longer for angrier notifications)
-      const dismissDelay = 12000 + (data.level || 0) * 3000
+      // Auto-dismiss after 45 seconds
+      const dismissDelay = 45000
       clearTimeout(autoDismissTimer)
       autoDismissTimer = setTimeout(handleDismiss, dismissDelay)
     })

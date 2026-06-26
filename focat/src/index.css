@@ -26,6 +26,7 @@ body {
   input[type="submit"],
   input[type="button"],
   input[type="reset"],
+  [data-click-feedback],
   .cursor-pointer
 ) {
   cursor: url('/cursors/Move.cur') 4 0, pointer !important;
@@ -41,6 +42,46 @@ html, body, #root {
 
 button { font-family: var(--font); cursor: pointer; }
 input  { font-family: var(--font); }
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[onclick],
+input[type="submit"]:not(:disabled),
+input[type="button"]:not(:disabled),
+input[type="reset"]:not(:disabled),
+[data-click-feedback],
+.cursor-pointer {
+  transform: translateY(0);
+  transform-origin: center;
+  transition:
+    transform 0.11s ease,
+    box-shadow 0.11s ease,
+    filter 0.11s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+button:not(:disabled).pressing,
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]).pressing,
+[role="button"]:not([aria-disabled="true"]):active,
+[onclick].pressing,
+[onclick]:active,
+input[type="submit"]:not(:disabled).pressing,
+input[type="submit"]:not(:disabled):active,
+input[type="button"]:not(:disabled).pressing,
+input[type="button"]:not(:disabled):active,
+input[type="reset"]:not(:disabled).pressing,
+input[type="reset"]:not(:disabled):active,
+[data-click-feedback].pressing,
+[data-click-feedback]:active,
+.cursor-pointer.pressing,
+.cursor-pointer:active {
+  transform: translateY(4px) scale(0.98);
+  box-shadow: inset 0 3px 0 rgba(92, 68, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.08) !important;
+  filter: brightness(0.97);
+}
 
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }

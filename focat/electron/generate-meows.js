@@ -93,6 +93,8 @@ function generateMeow(opts) {
   const numSamples = Math.ceil(duration * SAMPLE_RATE)
   const samples = new Float64Array(numSamples)
 
+  let phase = 0
+
   for (let i = 0; i < numSamples; i++) {
     const t = i / SAMPLE_RATE
     const progress = t / duration // 0→1
@@ -108,21 +110,16 @@ function generateMeow(opts) {
     // Add vibrato
     freq += Math.sin(2 * Math.PI * vibrato * t) * vibratoDepth
 
-    // Generate harmonics
+    // Proper phase accumulation
+    phase += (2 * Math.PI * freq) / SAMPLE_RATE
+
+    // Generate dynamic harmonics to simulate "mee-oww" vowel filter sweep
     let sample = 0
     for (let h = 0; h < harmonics.length; h++) {
-      const hFreq = freq * (h + 1)
-      sample += harmonics[h] * Math.sin(2 * Math.PI * hFreq * t / SAMPLE_RATE * SAMPLE_RATE / SAMPLE_RATE)
-    }
-
-    // Recompute properly with phase accumulation... let's simplify:
-    // We need proper phase accumulation for changing frequency
-    sample = 0
-    // We'll use a trick: integrate frequency to get phase
-    // But for simplicity, approximate:
-    const phase = 2 * Math.PI * freq * t
-    for (let h = 0; h < harmonics.length; h++) {
-      sample += harmonics[h] * Math.sin(phase * (h + 1))
+      const hNum = h + 1
+      // Higher harmonics fade out faster to close the mouth/darken the sound
+      const muffle = Math.max(0, 1 - progress * (0.25 + h * 0.2))
+      sample += harmonics[h] * muffle * Math.sin(phase * hNum)
     }
 
     // Add slight noise for breathiness
@@ -163,21 +160,21 @@ function main() {
   ensureDir(OUTPUT_DIR)
   console.log('Generating meow sounds...\n')
 
-  // 1. Sweet meow — gentle, short, high-pitched, soft
+  // 1. Sweet meow — gentle, short, high-pitched, soft, cute kitten mew
   const sweet = generateMeow({
-    duration: 0.35,
-    baseFreq: 800,
-    peakFreq: 950,
-    endFreq: 700,
-    volume: 0.4,
-    attack: 0.06,
-    decay: 0.04,
+    duration: 0.28,
+    baseFreq: 850,
+    peakFreq: 1100,
+    endFreq: 780,
+    volume: 0.45,
+    attack: 0.04,
+    decay: 0.03,
     sustain: 0.5,
-    release: 0.12,
-    vibrato: 4,
-    vibratoDepth: 10,
-    harmonics: [1, 0.3, 0.1],
-    noiseAmount: 0.02,
+    release: 0.08,
+    vibrato: 3,
+    vibratoDepth: 6,
+    harmonics: [1.0, 0.5, 0.22, 0.06],
+    noiseAmount: 0.01,
   })
   writeWav(path.join(OUTPUT_DIR, 'meow-sweet.wav'), sweet)
 

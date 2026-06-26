@@ -55,6 +55,10 @@
   transition: transform .1s;
 }
 .btn:hover { transform: scale(1.06); }
+.btn:active {
+  transform: translateY(4px) scale(0.98);
+  box-shadow: inset 0 3px 0 rgba(92, 68, 0, 0.18), 0 1px 1px rgba(0, 0, 0, 0.08);
+}
 
 .yes { background: #FFE656; color: #5C4400; }
 .no  { background: #FFFFFF; color: #9F8700; border-color: #FFEF95; }

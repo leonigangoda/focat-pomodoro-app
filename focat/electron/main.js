@@ -1,31 +1,40 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, safeStorage, Notification } = require('electron')
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, safeStorage, screen, Notification } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const { execFile } = require('child_process')
+const { pathToFileURL } = require('url')
 
 const USER_DATA = app.getPath('userData')
 const TASKS_FILE = path.join(USER_DATA, 'tasks.json')
 const SETTINGS_FILE = path.join(USER_DATA, 'settings.json')
 const API_KEY_FILE = path.join(USER_DATA, 'apikey.enc')
 const NAME_FILE = path.join(USER_DATA, 'username.txt')
+const USAGE_FILE = path.join(USER_DATA, 'app-usage.json')
 
 let mainWindow = null
+let notificationWindow = null
+let pendingNotificationData = null
 let tray = null
 let isQuitting = false
 let focusGuardTimer = null
-let distractionStartedAt = 0
-let lastDistractionKey = ''
-let lastFocusNudgeAt = 0
+let currentDistractionSession = null
+let activeUsageSample = null
+let lastFocatInteractionAt = Date.now()
+let lastStudyPromptAt = 0
 let focusSnoozeUntil = 0
 
-const FOCUS_CHECK_INTERVAL_MS = 30 * 1000
-const DISTRACTION_GRACE_MS = 90 * 1000
-const FOCUS_NUDGE_COOLDOWN_MS = 15 * 60 * 1000
+const FOCUS_CHECK_INTERVAL_MS = 15 * 1000
+const DISTRACTION_GRACE_MS = 30 * 1000
+const DOOMSCROLL_TEN_MIN_MS = 10 * 60 * 1000
+const DOOMSCROLL_THIRTY_MIN_MS = 30 * 60 * 1000
+const APP_UNUSED_PROMPT_MS = 10 * 60 * 1000
 const FOCUS_SNOOZE_MS = 5 * 60 * 1000
+const NOTIFICATION_WIDTH = 380
+const NOTIFICATION_HEIGHT = 190
 
 const DISTRACTING_APPS = [
-  'discord', 'steam', 'epicgameslauncher', 'spotify', 'netflix', 'vlc',
-  'telegram', 'whatsapp', 'snapchat', 'tiktok', 'instagram',
+  'discord', 'netflix', 'telegram', 'whatsapp', 'snapchat', 'tiktok',
+  'instagram', 'facebook', 'messenger',
 ]
 
 const DISTRACTING_TITLE_KEYWORDS = [
@@ -36,6 +45,30 @@ const DISTRACTING_TITLE_KEYWORDS = [
 
 const BROWSER_PROCESSES = [
   'chrome', 'msedge', 'firefox', 'brave', 'opera', 'operagx', 'vivaldi',
+]
+
+const DOOMSCROLL_STEPS = [
+  {
+    id: 'first',
+    afterMs: DISTRACTION_GRACE_MS,
+    level: 1,
+    sound: 'meow-normal.wav',
+    message: 'Caught you doomscrolling! Take 2 mins to schedule your tasks before you go ahead.',
+  },
+  {
+    id: 'ten',
+    afterMs: DOOMSCROLL_TEN_MIN_MS,
+    level: 2,
+    sound: 'meow-annoyed.wav',
+    message: 'Another 10 mins on doomscrolling. Can we start small?',
+  },
+  {
+    id: 'thirty',
+    afterMs: DOOMSCROLL_THIRTY_MIN_MS,
+    level: 3,
+    sound: 'meow-angry.wav',
+    message: 'You literally spent 30 mins doomscrolling! Tell me one thing you have to do.',
+  },
 ]
 
 function createWindow({ startHidden = false } = {}) {
@@ -64,7 +97,18 @@ function createWindow({ startHidden = false } = {}) {
   mainWindow.on('close', (event) => {
     if (isQuitting) return
     event.preventDefault()
+    lastFocatInteractionAt = Date.now()
     mainWindow.hide()
+  })
+
+  mainWindow.on('focus', () => {
+    lastFocatInteractionAt = Date.now()
+    currentDistractionSession = null
+    hideNotificationWindow()
+  })
+
+  mainWindow.on('show', () => {
+    lastFocatInteractionAt = Date.now()
   })
 
   const isDev = process.env.NODE_ENV === 'development'
@@ -105,6 +149,76 @@ function showMainWindow() {
   mainWindow?.show()
   if (mainWindow?.isMinimized()) mainWindow.restore()
   mainWindow?.focus()
+  lastFocatInteractionAt = Date.now()
+  currentDistractionSession = null
+}
+
+function getSoundUrl(fileName) {
+  const unpackedPath = path.join(__dirname, '../public/sounds', fileName)
+  const packagedPath = path.join(process.resourcesPath || '', 'sounds', fileName)
+  const filePath = app.isPackaged && fs.existsSync(packagedPath) ? packagedPath : unpackedPath
+  return pathToFileURL(filePath).toString()
+}
+
+function positionNotificationWindow() {
+  if (!notificationWindow) return
+  const cursorPoint = screen.getCursorScreenPoint()
+  const { workArea } = screen.getDisplayNearestPoint(cursorPoint)
+  const x = Math.round(workArea.x + workArea.width - NOTIFICATION_WIDTH - 16)
+  const y = Math.round(workArea.y + workArea.height - NOTIFICATION_HEIGHT - 16)
+  notificationWindow.setBounds({ x, y, width: NOTIFICATION_WIDTH, height: NOTIFICATION_HEIGHT })
+}
+
+function deliverNotificationData() {
+  if (!notificationWindow || notificationWindow.isDestroyed() || !pendingNotificationData) return
+  positionNotificationWindow()
+  notificationWindow.showInactive()
+  notificationWindow.webContents.send('notif:show', pendingNotificationData)
+  pendingNotificationData = null
+}
+
+function createNotificationWindow() {
+  if (notificationWindow && !notificationWindow.isDestroyed()) return notificationWindow
+
+  notificationWindow = new BrowserWindow({
+    width: NOTIFICATION_WIDTH,
+    height: NOTIFICATION_HEIGHT,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    movable: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    show: false,
+    backgroundColor: '#00000000',
+    webPreferences: {
+      preload: path.join(__dirname, 'notification-preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  })
+
+  notificationWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+  notificationWindow.loadFile(path.join(__dirname, 'notification.html'))
+  notificationWindow.webContents.on('did-finish-load', deliverNotificationData)
+  notificationWindow.on('closed', () => { notificationWindow = null })
+  return notificationWindow
+}
+
+function hideNotificationWindow() {
+  if (notificationWindow && !notificationWindow.isDestroyed()) notificationWindow.hide()
+}
+
+function showFocatNotification({ message, hint = 'Click to open focat.', level = 1, sound = 'meow-sweet.wav' }) {
+  pendingNotificationData = {
+    message,
+    hint,
+    level,
+    meowFile: getSoundUrl(sound),
+  }
+
+  const win = createNotificationWindow()
+  if (!win.webContents.isLoading()) deliverNotificationData()
 }
 
 function createTray() {
@@ -181,6 +295,54 @@ function loadNextStudyTarget() {
   return null
 }
 
+function getUsageDateKey(date = new Date()) {
+  return date.toISOString().slice(0, 10)
+}
+
+function normalizeUsageName(info) {
+  return String(info?.processName || 'unknown').trim().toLowerCase() || 'unknown'
+}
+
+function trackForegroundUsage(info, distraction, now = Date.now()) {
+  if (!info?.processName) {
+    activeUsageSample = null
+    return
+  }
+
+  if (!activeUsageSample) {
+    activeUsageSample = { info, distraction, sampledAt: now }
+    return
+  }
+
+  const elapsedMs = Math.max(0, Math.min(now - activeUsageSample.sampledAt, FOCUS_CHECK_INTERVAL_MS * 2))
+  const previousName = normalizeUsageName(activeUsageSample.info)
+  if (elapsedMs < 1000 || previousName === 'focat' || previousName === 'electron') {
+    activeUsageSample = { info, distraction, sampledAt: now }
+    return
+  }
+
+  const usage = readJSON(USAGE_FILE, { days: {} })
+  const dateKey = getUsageDateKey()
+  const day = usage.days[dateKey] || { apps: {}, distractions: {} }
+
+  const appEntry = day.apps[previousName] || { seconds: 0, lastSeenAt: null }
+  appEntry.seconds += Math.round(elapsedMs / 1000)
+  appEntry.lastSeenAt = new Date(now).toISOString()
+  day.apps[previousName] = appEntry
+
+  if (activeUsageSample.distraction?.label) {
+    const label = activeUsageSample.distraction.label
+    const distractionEntry = day.distractions[label] || { seconds: 0, lastSeenAt: null }
+    distractionEntry.seconds += Math.round(elapsedMs / 1000)
+    distractionEntry.lastSeenAt = new Date(now).toISOString()
+    day.distractions[label] = distractionEntry
+  }
+
+  usage.days[dateKey] = day
+  writeJSON(USAGE_FILE, usage)
+  activeUsageSample = { info, distraction, sampledAt: now }
+}
+
 function getActiveWindowInfo() {
   if (process.platform !== 'win32') return Promise.resolve(null)
 
@@ -249,57 +411,84 @@ function classifyDistraction(info) {
   return null
 }
 
-function showFocusNudge(distraction, studyTarget) {
-  if (!Notification.isSupported()) return
+function getStudyHint(distraction) {
+  const target = loadNextStudyTarget()
+  if (target) return `Open focat and do one tiny step: ${target}`
+  if (distraction?.label) return `Detected: ${distraction.label}. Click to open focat.`
+  return 'Click to open focat.'
+}
 
-  const targetLine = studyTarget ? ` Try one tiny step: ${studyTarget}` : ''
-  const notification = new Notification({
-    title: 'focat',
-    body: `Doomscrolling? How about we complete one single task and get back to it?${targetLine}`,
-    actions: [
-      { type: 'button', text: 'Remind me in 5 mins' },
-      { type: 'button', text: 'Okay' },
-    ],
-    closeButtonText: 'Okay',
-    timeoutType: 'never',
+function showFocusNudge(distraction, step) {
+  showFocatNotification({
+    message: step.message,
+    hint: getStudyHint(distraction),
+    level: step.level,
+    sound: step.sound,
   })
+}
 
-  notification.on('action', (_event, index) => {
-    if (index === 0) {
-      focusSnoozeUntil = Date.now() + FOCUS_SNOOZE_MS
-      return
-    }
-    showMainWindow()
+function maybeShowIdleStudyPrompt(now) {
+  const focatIsActive = mainWindow?.isVisible() && mainWindow?.isFocused()
+  if (focatIsActive) {
+    lastFocatInteractionAt = now
+    return
+  }
+
+  const appUnusedLongEnough = now - lastFocatInteractionAt >= APP_UNUSED_PROMPT_MS
+  const promptCooledDown = now - lastStudyPromptAt >= APP_UNUSED_PROMPT_MS
+  if (!appUnusedLongEnough || !promptCooledDown) return
+
+  showFocatNotification({
+    message: 'Hey, can you tell me the tasks you have to do today? Click me.',
+    hint: 'Open focat and write the first thing on your mind.',
+    level: 1,
+    sound: 'meow-sweet.wav',
   })
-  notification.on('click', showMainWindow)
-  notification.show()
-  lastFocusNudgeAt = Date.now()
+  lastStudyPromptAt = now
 }
 
 async function checkFocusGuard() {
   const settings = loadSettings()
   if (settings.focusGuardEnabled === false) return
-  if (Date.now() < focusSnoozeUntil) return
+  const now = Date.now()
+  maybeShowIdleStudyPrompt(now)
+  if (now < focusSnoozeUntil) return
 
   const info = await getActiveWindowInfo()
   const distraction = classifyDistraction(info)
+  trackForegroundUsage(info, distraction, now)
+
   if (!distraction) {
-    distractionStartedAt = 0
-    lastDistractionKey = ''
+    currentDistractionSession = null
     return
   }
 
-  if (distraction.key !== lastDistractionKey) {
-    lastDistractionKey = distraction.key
-    distractionStartedAt = Date.now()
+  if (mainWindow?.isFocused()) {
+    currentDistractionSession = null
     return
   }
 
-  const hasBeenDistractedLongEnough = Date.now() - distractionStartedAt >= DISTRACTION_GRACE_MS
-  const cooledDown = Date.now() - lastFocusNudgeAt >= FOCUS_NUDGE_COOLDOWN_MS
-  if (!hasBeenDistractedLongEnough || !cooledDown) return
+  if (!currentDistractionSession || distraction.key !== currentDistractionSession.key) {
+    currentDistractionSession = {
+      key: distraction.key,
+      label: distraction.label,
+      startedAt: now,
+      notifiedSteps: new Set(),
+    }
+    return
+  }
 
-  showFocusNudge(distraction, loadNextStudyTarget())
+  const elapsed = now - currentDistractionSession.startedAt
+  let stepToShow = null
+  for (const step of DOOMSCROLL_STEPS) {
+    if (elapsed >= step.afterMs && !currentDistractionSession.notifiedSteps.has(step.id)) {
+      stepToShow = step
+    }
+  }
+  if (!stepToShow) return
+
+  currentDistractionSession.notifiedSteps.add(stepToShow.id)
+  showFocusNudge(distraction, stepToShow)
 }
 
 function startFocusGuard() {
@@ -405,6 +594,15 @@ Return ONLY a JSON array, no markdown, no explanation:
 ipcMain.handle('notify:done', (_, { title }) => {
   new Notification({ title: 'focat', body: `Timer done for "${title}" — are you?` }).show()
   return { ok: true }
+})
+
+ipcMain.on('notif:clicked', () => {
+  hideNotificationWindow()
+  showMainWindow()
+})
+
+ipcMain.on('notif:dismissed', () => {
+  hideNotificationWindow()
 })
 
 const gotLock = app.requestSingleInstanceLock()

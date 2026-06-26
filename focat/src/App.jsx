@@ -3,6 +3,7 @@ import { useTimer }       from './hooks/useTimer'
 import { useTaskStore }   from './hooks/useTaskStore'
 import { useSettings }    from './hooks/useSettings'
 import { useMusicPlayer } from './hooks/useMusicPlayer'
+import { useClickFeedback } from './hooks/useClickFeedback'
 
 import LoadingScreen   from './components/LoadingScreen'
 import TitleBar        from './components/TitleBar'
@@ -36,6 +37,7 @@ export default function App() {
   const timer  = useTimer()
   const store  = useTaskStore()
   const music  = useMusicPlayer(settings.musicVolume, settings.musicTrack)
+  useClickFeedback()
 
   // Clock tick
   useEffect(() => {

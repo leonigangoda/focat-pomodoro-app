@@ -64,9 +64,10 @@
 }
 
 .musicBox {
-  background: #5C4400;
+  background: #FFEA60;
+  border: 2.5px solid #FFEF95;
   border-radius: 20px;
-  padding: 10px;
+  padding: 6px;
   width: 100%;
   display: flex;
   align-items: center;
