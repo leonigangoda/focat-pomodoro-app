@@ -287,6 +287,40 @@ export function useMusicPlayer(initialVolume = 0.5, initialTrack = 0) {
 
   const audioRef = useRef(null)
   const timeoutRef = useRef(null)
+  const fadeIntervalRef = useRef(null)
+  const targetVolumeRef = useRef(initialVolume)
+
+  const startFadeIn = useCallback((targetVol) => {
+    if (fadeIntervalRef.current) {
+      clearInterval(fadeIntervalRef.current)
+      fadeIntervalRef.current = null
+    }
+
+    const durationMs = 7000
+    const intervalMs = 100 // Update volume every 100ms
+    const steps = durationMs / intervalMs
+    let currentStep = 0
+
+    fadeIntervalRef.current = setInterval(() => {
+      currentStep++
+      const progress = currentStep / steps
+      const currentVol = targetVol * progress
+
+      if (progress >= 1) {
+        if (audioRef.current) {
+          audioRef.current.volume = targetVol
+        }
+        synthPlayer.setVolume(targetVol)
+        clearInterval(fadeIntervalRef.current)
+        fadeIntervalRef.current = null
+      } else {
+        if (audioRef.current) {
+          audioRef.current.volume = currentVol
+        }
+        synthPlayer.setVolume(currentVol)
+      }
+    }, intervalMs)
+  }, [])
 
   const playTrack = useCallback((idx, currentMode) => {
     // Clean up
@@ -306,7 +340,7 @@ export function useMusicPlayer(initialVolume = 0.5, initialTrack = 0) {
       console.log(`Attempting online audio for: ${track.title}`)
       const audio = new Audio(track.src)
       audio.loop = true
-      audio.volume = volume
+      audio.volume = 0 // Start at 0 for fade-in
       audioRef.current = audio
 
       let fallbackTriggered = false
@@ -333,15 +367,20 @@ export function useMusicPlayer(initialVolume = 0.5, initialTrack = 0) {
       })
     } else {
       console.log(`Using local synthesizer for: ${track.title}`)
-      synthPlayer.play(track.title, volume)
+      synthPlayer.play(track.title, 0) // Start at 0 for fade-in
     }
-  }, [volume])
+  }, []) // Removed dependency on volume to prevent track restarting when volume changes
 
   // Playback effect
   useEffect(() => {
     if (playing) {
       playTrack(trackIndex, audioMode)
+      startFadeIn(targetVolumeRef.current)
     } else {
+      if (fadeIntervalRef.current) {
+        clearInterval(fadeIntervalRef.current)
+        fadeIntervalRef.current = null
+      }
       if (audioRef.current) {
         audioRef.current.pause()
         audioRef.current = null
@@ -352,10 +391,16 @@ export function useMusicPlayer(initialVolume = 0.5, initialTrack = 0) {
         timeoutRef.current = null
       }
     }
-  }, [trackIndex, playing, audioMode, playTrack])
+  }, [trackIndex, playing, audioMode, playTrack, startFadeIn])
 
   // Volume effect
   useEffect(() => {
+    targetVolumeRef.current = volume
+    // If the user manually changes the volume, cancel any ongoing fade-in and apply it immediately
+    if (fadeIntervalRef.current) {
+      clearInterval(fadeIntervalRef.current)
+      fadeIntervalRef.current = null
+    }
     if (audioRef.current) {
       audioRef.current.volume = volume
     }
@@ -371,6 +416,9 @@ export function useMusicPlayer(initialVolume = 0.5, initialTrack = 0) {
       synthPlayer.stop()
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
+      }
+      if (fadeIntervalRef.current) {
+        clearInterval(fadeIntervalRef.current)
       }
     }
   }, [])

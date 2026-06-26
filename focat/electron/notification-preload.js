@@ -6,4 +6,6 @@ contextBridge.exposeInMainWorld('focat', {
   },
   clicked: () => ipcRenderer.send('notif:clicked'),
   dismissed: () => ipcRenderer.send('notif:dismissed'),
+  snooze5min: () => ipcRenderer.send('notif:snooze5min'),
+  imStudying: () => ipcRenderer.send('notif:imStudying'),
 })

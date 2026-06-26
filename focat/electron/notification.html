@@ -111,6 +111,63 @@
       letter-spacing: 0.2px;
     }
 
+    /* Action buttons row */
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      font-family: 'Gaegu', cursive;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1.5px solid #5C4400;
+      background: #FFFADB;
+      color: #5C4400;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover {
+      background: #5C4400;
+      color: #FFE656;
+      transform: scale(1.04);
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .action-btn.study-btn {
+      border-color: #2E7D32;
+      color: #2E7D32;
+      background: #E8F5E9;
+    }
+
+    .action-btn.study-btn:hover {
+      background: #2E7D32;
+      color: #FFFFFF;
+    }
+
+    /* Follow-up notification (the "GL" message) */
+    .notification.followup {
+      background: #E8F5E9;
+      border-color: #2E7D32;
+    }
+
+    .notification.followup .message {
+      color: #2E7D32;
+    }
+
+    .notification.followup .label {
+      color: #2E7D32;
+    }
+
     /* Intensity pulsing for higher levels */
     .notification.level-2 {
       animation: slideIn 0.4s ease forwards, pulse 2s ease-in-out infinite 0.5s;
@@ -171,6 +228,10 @@
     </div>
     <div class="message" id="messageText"></div>
     <div class="hint" id="hintText"></div>
+    <div class="actions" id="actionsRow" style="display: none;">
+      <button class="action-btn" id="snoozeBtn" onclick="event.stopPropagation(); handleSnooze()">Give me 5 mins</button>
+      <button class="action-btn study-btn" id="studyBtn" onclick="event.stopPropagation(); handleStudying()" style="display: none;">I'm studying</button>
+    </div>
   </div>
 
   <audio id="meowAudio" preload="auto"></audio>
@@ -180,6 +241,9 @@
     const messageEl = document.getElementById('messageText')
     const hintEl = document.getElementById('hintText')
     const audioEl = document.getElementById('meowAudio')
+    const actionsRow = document.getElementById('actionsRow')
+    const snoozeBtn = document.getElementById('snoozeBtn')
+    const studyBtn = document.getElementById('studyBtn')
 
     let autoDismissTimer = null
 
@@ -188,12 +252,38 @@
       messageEl.textContent = data.message || ''
       hintEl.textContent = data.hint || ''
 
-      // Set intensity level class
+      // Reset classes
       notifEl.className = 'notification'
+
+      // Check if this is a follow-up notification (the "GL" message)
+      if (data.isFollowUp) {
+        notifEl.classList.add('followup')
+        actionsRow.style.display = 'none'
+
+        // Follow-up auto-dismisses in 7 seconds
+        clearTimeout(autoDismissTimer)
+        autoDismissTimer = setTimeout(handleDismiss, 7000)
+
+        // No sound for follow-up
+        return
+      }
+
+      // Set intensity level class
       if (data.level >= 3) {
         notifEl.classList.add('level-3')
       } else if (data.level >= 2) {
         notifEl.classList.add('level-2')
+      }
+
+      // Show action buttons
+      actionsRow.style.display = 'flex'
+      snoozeBtn.style.display = 'inline-block'
+
+      // Show "I'm studying" button only for educational apps
+      if (data.showStudyOption) {
+        studyBtn.style.display = 'inline-block'
+      } else {
+        studyBtn.style.display = 'none'
       }
 
       // Play meow sound
@@ -203,10 +293,9 @@
         audioEl.play().catch(() => {})
       }
 
-      // Auto-dismiss after 45 seconds
-      const dismissDelay = 45000
+      // Auto-dismiss after 1.5 minutes (90 seconds)
       clearTimeout(autoDismissTimer)
-      autoDismissTimer = setTimeout(handleDismiss, dismissDelay)
+      autoDismissTimer = setTimeout(handleDismiss, 90000)
     })
 
     function handleClick() {
@@ -219,6 +308,22 @@
       notifEl.classList.add('closing')
       setTimeout(() => {
         window.focat.dismissed()
+      }, 300)
+    }
+
+    function handleSnooze() {
+      clearTimeout(autoDismissTimer)
+      notifEl.classList.add('closing')
+      setTimeout(() => {
+        window.focat.snooze5min()
+      }, 300)
+    }
+
+    function handleStudying() {
+      clearTimeout(autoDismissTimer)
+      notifEl.classList.add('closing')
+      setTimeout(() => {
+        window.focat.imStudying()
       }, 300)
     }
   </script>

@@ -24,13 +24,20 @@ let lastStudyPromptAt = 0
 let focusSnoozeUntil = 0
 
 const FOCUS_CHECK_INTERVAL_MS = 15 * 1000
-const DISTRACTION_GRACE_MS = 30 * 1000
+const DISTRACTION_GRACE_MS = 2 * 60 * 1000
 const DOOMSCROLL_TEN_MIN_MS = 10 * 60 * 1000
 const DOOMSCROLL_THIRTY_MIN_MS = 30 * 60 * 1000
 const APP_UNUSED_PROMPT_MS = 10 * 60 * 1000
 const FOCUS_SNOOZE_MS = 5 * 60 * 1000
 const NOTIFICATION_WIDTH = 380
-const NOTIFICATION_HEIGHT = 190
+const NOTIFICATION_HEIGHT = 220
+
+// Apps/sites that COULD be used for studying (show "I'm studying" option)
+const EDUCATIONAL_POSSIBLE = [
+  'youtube', 'coursera', 'udemy', 'edx', 'khan academy', 'brilliant',
+  'stackoverflow', 'github', 'medium', 'notion', 'google docs',
+  'wikipedia', 'w3schools', 'mdn', 'leetcode', 'hackerrank',
+]
 
 const DISTRACTING_APPS = [
   'discord', 'netflix', 'telegram', 'whatsapp', 'snapchat', 'tiktok',
@@ -209,12 +216,14 @@ function hideNotificationWindow() {
   if (notificationWindow && !notificationWindow.isDestroyed()) notificationWindow.hide()
 }
 
-function showFocatNotification({ message, hint = 'Click to open focat.', level = 1, sound = 'meow-sweet.wav' }) {
+function showFocatNotification({ message, hint = 'Click to open focat.', level = 1, sound = 'meow-sweet.wav', showStudyOption = false, isFollowUp = false }) {
   pendingNotificationData = {
     message,
     hint,
     level,
-    meowFile: getSoundUrl(sound),
+    meowFile: isFollowUp ? null : getSoundUrl(sound),
+    showStudyOption,
+    isFollowUp,
   }
 
   const win = createNotificationWindow()
@@ -399,13 +408,15 @@ function classifyDistraction(info) {
 
   const appMatch = DISTRACTING_APPS.find(appName => processName.includes(appName))
   if (appMatch) {
-    return { label: appMatch, key: `${processName}:${appMatch}` }
+    return { label: appMatch, key: `${processName}:${appMatch}`, educational: false }
   }
 
   const isBrowser = BROWSER_PROCESSES.some(browserName => processName.includes(browserName))
   const titleMatch = DISTRACTING_TITLE_KEYWORDS.find(keyword => title.includes(keyword))
   if (isBrowser && titleMatch) {
-    return { label: titleMatch, key: `${processName}:${titleMatch}` }
+    // Check if this could be an educational site
+    const isEducational = EDUCATIONAL_POSSIBLE.some(edu => title.includes(edu))
+    return { label: titleMatch, key: `${processName}:${titleMatch}`, educational: isEducational }
   }
 
   return null
@@ -424,6 +435,7 @@ function showFocusNudge(distraction, step) {
     hint: getStudyHint(distraction),
     level: step.level,
     sound: step.sound,
+    showStudyOption: distraction?.educational === true,
   })
 }
 
@@ -603,6 +615,27 @@ ipcMain.on('notif:clicked', () => {
 
 ipcMain.on('notif:dismissed', () => {
   hideNotificationWindow()
+})
+
+ipcMain.on('notif:snooze5min', () => {
+  hideNotificationWindow()
+  focusSnoozeUntil = Date.now() + FOCUS_SNOOZE_MS
+})
+
+ipcMain.on('notif:imStudying', () => {
+  hideNotificationWindow()
+  // Snooze for 15 minutes before checking again
+  focusSnoozeUntil = Date.now() + 15 * 60 * 1000
+  currentDistractionSession = null
+  // Show a brief follow-up encouragement notification
+  setTimeout(() => {
+    showFocatNotification({
+      message: "Okay, I'll check up on you later. GL 💛",
+      hint: '',
+      level: 1,
+      isFollowUp: true,
+    })
+  }, 400)
 })
 
 const gotLock = app.requestSingleInstanceLock()
