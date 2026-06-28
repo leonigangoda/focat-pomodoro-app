@@ -26,39 +26,49 @@ Setup asks for exactly two things: your name, and your learning style (visual, a
 
 ## Core Features
 
-**Task decomposition (Gemini-powered)**
+**Task decomposition (Gemini-powered)** :
+
 Type a task into the home screen and it's sent to an embedded task-decomposing agent (Gemini API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
 
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/9846e254-21eb-46e3-94ac-c8a82298da97" />
 
-**Calendar**
+**Calendar**:
+
 Schedule tasks on a built-in calendar and send them straight to the task decomposition agent from the calendar view, so a scheduled task can be broken down the moment it's added.
 
-**Learning-style adaptation**
+**Learning-style adaptation** :
+
 Each generated step is phrased according to the learning style set at onboarding — visual, auditory, reading/writing, kinesthetic, or a mix of all four. The underlying task structure stays the same; only the way each step is described changes.
 
-**Deadline-aware adjustment**
+**Deadline-aware adjustment** :
+
 As a deadline approaches, the step list automatically trims down to the highest-priority actions and shortens time estimates, instead of asking the user to manually re-plan under pressure.
 
-**Pomodoro timer**
+**Pomodoro timer** :
+
 A built-in Pomodoro clock for working in focused intervals with built-in breaks.
 
-**Focus sessions** *(in progress)*
+**Focus sessions** *(in progress)* :
+
 A distraction-minimized timer screen with ambient visual and audio cues that simulate the accountability effect of working alongside someone else, without requiring a live video connection.
 
-**Focus music**
+**Focus music** :
+
 Background music playback during focus sessions. These promote the music that ADHD people usually use to stay focused like, brown noise and white noise, space music, lofi rain etc.
 
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/3126f45c-c2ae-4cbc-aa86-e83a8def1cbb" />
 
 
-**Gentle re-engagement notifications**
+**Gentle re-engagement notifications** :
+
 If the app goes unopened for a while, Focat sends a notification nudging the user to start small — usually by suggesting they add just one task to today's list. The goal is to lower the barrier back in, not to guilt the user into opening the app.
 
-**Doomscrolling detection**
+**Doomscrolling detection**:
+
 Focat monitors browser and application activity on the device to detect doomscrolling patterns. YouTube is handled differently from other distractions: instead of an interruption, the user gets a custom check-in message asking if they're currently studying or using YouTube for something task-related. Once confirmed, Focat backs off and doesn't interrupt that session again.
 
-**Custom sound design**
+**Custom sound design**:
+
 Notification sounds use cat sound effects, and UI interactions have their own custom click sounds, in keeping with the app's overall aesthetic.
 
 ## Design Principles
