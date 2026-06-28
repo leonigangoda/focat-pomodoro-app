@@ -1,8 +1,8 @@
 # Focat
 
-<img width="1280" height="832" alt="focus app cat (3)" src="https://github.com/user-attachments/assets/27fb784a-b0fa-492a-87c5-4b92d6c77e0d" />
-
 Focat is a desktop task and focus companion built for students with ADHD. It breaks large, vague tasks into small actionable steps, adapts to how the user actually thinks and works, and supports focus sessions without demanding the kind of sustained self-discipline that ADHD makes difficult.
+
+<img width="1280" height="832" alt="focus app cat (3)" src="https://github.com/user-attachments/assets/27fb784a-b0fa-492a-87c5-4b92d6c77e0d" />
 
 Most productivity tools assume the user can plan ahead, stay consistent, and self-motivate. Focat assumes the opposite, and is designed around that reality instead of working against it.
 
@@ -19,11 +19,15 @@ Focat is a desktop application built with Electron.
 ## Onboarding
 
 Setup asks for exactly two things: your name, and your learning style (visual, auditory, reading/writing, kinesthetic, or a mix). No further setup steps. Everything else is configured as you go, inside the app.
+<img width="1917" height="1015" alt="image" src="https://github.com/user-attachments/assets/5b4a7e9f-d07f-4500-b6f6-c31d04b4da24" />
+<img width="1917" height="975" alt="image" src="https://github.com/user-attachments/assets/2a9deeed-87bf-42ec-96cf-aeb7c54f296f" />
 
 ## Core Features
 
 **Task decomposition (Gemini-powered)**
 Type a task into the home screen and it's sent to an embedded task-decomposing agent (Gemini API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
+
+<img width="742" height="397" alt="image" src="https://github.com/user-attachments/assets/9846e254-21eb-46e3-94ac-c8a82298da97" />
 
 **Calendar**
 Schedule tasks on a built-in calendar and send them straight to the task decomposition agent from the calendar view, so a scheduled task can be broken down the moment it's added.
@@ -41,7 +45,10 @@ A built-in Pomodoro clock for working in focused intervals with built-in breaks.
 A distraction-minimized timer screen with ambient visual and audio cues that simulate the accountability effect of working alongside someone else, without requiring a live video connection.
 
 **Focus music**
-Background music playback during focus sessions.
+Background music playback during focus sessions. These promote the music that ADHD people usually use to stay focused like, brown noise and white noise, space music, lofi rain etc.
+
+<img width="632" height="150" alt="image" src="https://github.com/user-attachments/assets/3126f45c-c2ae-4cbc-aa86-e83a8def1cbb" />
+
 
 **Gentle re-engagement notifications**
 If the app goes unopened for a while, Focat sends a notification nudging the user to start small — usually by suggesting they add just one task to today's list. The goal is to lower the barrier back in, not to guilt the user into opening the app.
