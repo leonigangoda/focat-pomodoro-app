@@ -2,7 +2,7 @@
 
 Focat is a desktop task and focus companion built for students with ADHD. It breaks large, vague tasks into small actionable steps, adapts to how the user actually thinks and works, and supports focus sessions without demanding the kind of sustained self-discipline that ADHD makes difficult.
 
-<img width="1280" height="832" alt="focus app cat (3)" src="https://github.com/user-attachments/assets/27fb784a-b0fa-492a-87c5-4b92d6c77e0d" />
+<img width="50%" height="50%" alt="focus app cat (3)" src="https://github.com/user-attachments/assets/27fb784a-b0fa-492a-87c5-4b92d6c77e0d" />
 
 Most productivity tools assume the user can plan ahead, stay consistent, and self-motivate. Focat assumes the opposite, and is designed around that reality instead of working against it.
 
