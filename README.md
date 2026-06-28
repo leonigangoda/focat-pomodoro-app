@@ -19,7 +19,9 @@ Focat is a desktop application built with Electron.
 ## Onboarding
 
 Setup asks for exactly two things: your name, and your learning style (visual, auditory, reading/writing, kinesthetic, or a mix). No further setup steps. Everything else is configured as you go, inside the app.
+
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/5b4a7e9f-d07f-4500-b6f6-c31d04b4da24" />
+
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/2a9deeed-87bf-42ec-96cf-aeb7c54f296f" />
 
 ## Core Features
