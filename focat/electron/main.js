@@ -6,6 +6,7 @@ const { pathToFileURL } = require('url')
 
 const USER_DATA = app.getPath('userData')
 const TASKS_FILE = path.join(USER_DATA, 'tasks.json')
+const EVENTS_FILE = path.join(USER_DATA, 'events.json')
 const SETTINGS_FILE = path.join(USER_DATA, 'settings.json')
 const API_KEY_FILE = path.join(USER_DATA, 'apikey.enc')
 const NAME_FILE = path.join(USER_DATA, 'username.txt')
@@ -17,6 +18,7 @@ let pendingNotificationData = null
 let tray = null
 let isQuitting = false
 let focusGuardTimer = null
+let eventReminderTimer = null
 let currentDistractionSession = null
 let activeUsageSample = null
 let lastFocatInteractionAt = Date.now()
@@ -24,6 +26,7 @@ let lastStudyPromptAt = 0
 let focusSnoozeUntil = 0
 
 const FOCUS_CHECK_INTERVAL_MS = 15 * 1000
+const EVENT_CHECK_INTERVAL_MS = 60 * 1000
 const DISTRACTION_GRACE_MS = 2 * 60 * 1000
 const DOOMSCROLL_TEN_MIN_MS = 10 * 60 * 1000
 const DOOMSCROLL_THIRTY_MIN_MS = 30 * 60 * 1000
@@ -76,6 +79,14 @@ const DOOMSCROLL_STEPS = [
     sound: 'meow-angry.wav',
     message: 'You literally spent 30 mins doomscrolling! Tell me one thing you have to do.',
   },
+]
+
+const EVENT_REMINDER_STEPS = [
+  { id: '10h', beforeMs: 10 * 60 * 60 * 1000, label: '10 hours left', level: 2, sound: 'meow-attention.wav' },
+  { id: '1d', beforeMs: 24 * 60 * 60 * 1000, label: 'Tomorrow', level: 1, sound: 'meow-sweet.wav' },
+  { id: '2d', beforeMs: 2 * 24 * 60 * 60 * 1000, label: '2 days left', level: 1, sound: 'meow-sweet.wav' },
+  { id: '4d', beforeMs: 4 * 24 * 60 * 60 * 1000, label: '4 days left', level: 1, sound: 'meow-normal.wav' },
+  { id: '7d', beforeMs: 7 * 24 * 60 * 60 * 1000, label: '7 days left', level: 1, sound: 'meow-normal.wav' },
 ]
 
 function createWindow({ startHidden = false } = {}) {
@@ -149,6 +160,11 @@ function loadSettings() {
     focusGuardEnabled: true,
     focusGuardStartAtLogin: true,
   })
+}
+
+function loadEvents() {
+  const data = readJSON(EVENTS_FILE, { events: [] })
+  return { events: Array.isArray(data.events) ? data.events : [] }
 }
 
 function showMainWindow() {
@@ -459,6 +475,86 @@ function maybeShowIdleStudyPrompt(now) {
   lastStudyPromptAt = now
 }
 
+function formatEventTime(startAt) {
+  const date = new Date(startAt)
+  if (Number.isNaN(date.getTime())) return 'soon'
+  return date.toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
+function checkEventReminders() {
+  const focatIsActive = mainWindow?.isVisible() && mainWindow?.isFocused()
+  if (focatIsActive) return
+
+  const data = loadEvents()
+  const now = Date.now()
+  let changed = false
+  let reminderToShow = null
+
+  const events = data.events.map(event => {
+    const startMs = new Date(event.startAt).getTime()
+    if (!event?.id || Number.isNaN(startMs) || startMs <= now) return event
+
+    const remindersSent = Array.isArray(event.remindersSent) ? event.remindersSent : []
+
+    let beforeMs = null
+    let label = ''
+    if (event.reminder && event.reminder.type !== 'none') {
+      const type = event.reminder.type
+      if (type === '30m') {
+        beforeMs = 30 * 60 * 1000
+        label = '30 minutes'
+      } else if (type === '1d') {
+        beforeMs = 24 * 60 * 60 * 1000
+        label = '1 day'
+      } else if (type === '3d') {
+        beforeMs = 3 * 24 * 60 * 60 * 1000
+        label = '3 days'
+      } else if (type === '7d') {
+        beforeMs = 7 * 24 * 60 * 60 * 1000
+        label = '7 days'
+      } else if (type === 'custom') {
+        beforeMs = (event.reminder.value || 0) * 60 * 1000
+        const val = event.reminder.customValue || '0'
+        const unit = event.reminder.customUnit || 'minutes'
+        label = `${val} ${val === '1' ? unit.replace(/s$/, '') : unit}`
+      }
+    }
+
+    if (beforeMs === null) return event
+
+    const timeLeftMs = startMs - now
+    if (timeLeftMs > 0 && timeLeftMs <= beforeMs) {
+      const reminderId = `${event.reminder.type}-${beforeMs}`
+      if (remindersSent.includes(reminderId)) return event
+
+      if (!reminderToShow) {
+        reminderToShow = { event, label }
+        changed = true
+        return { ...event, remindersSent: [...remindersSent, reminderId] }
+      }
+    }
+
+    return event
+  })
+
+  if (changed) writeJSON(EVENTS_FILE, { events })
+  if (!reminderToShow) return
+
+  const message = `"${reminderToShow.event.title}" is coming in ${reminderToShow.label}, let's start small`
+
+  showFocatNotification({
+    message,
+    hint: `Starts ${formatEventTime(reminderToShow.event.startAt)}. Click to open focat.`,
+    level: 1,
+    sound: 'meow-normal.wav',
+  })
+}
+
 async function checkFocusGuard() {
   const settings = loadSettings()
   if (settings.focusGuardEnabled === false) return
@@ -509,6 +605,12 @@ function startFocusGuard() {
   focusGuardTimer = setInterval(checkFocusGuard, FOCUS_CHECK_INTERVAL_MS)
 }
 
+function startEventReminders() {
+  if (eventReminderTimer) return
+  checkEventReminders()
+  eventReminderTimer = setInterval(checkEventReminders, EVENT_CHECK_INTERVAL_MS)
+}
+
 // Window controls
 ipcMain.on('win:minimize', () => mainWindow?.minimize())
 ipcMain.on('win:close', () => mainWindow?.close())
@@ -524,6 +626,13 @@ ipcMain.handle('name:load', () => loadName())
 // Tasks
 ipcMain.handle('tasks:load', () => readJSON(TASKS_FILE, { tasks: [], archived: [] }))
 ipcMain.handle('tasks:save', (_, data) => { writeJSON(TASKS_FILE, data); return { ok: true } })
+
+// Events
+ipcMain.handle('events:load', () => loadEvents())
+ipcMain.handle('events:save', (_, data) => {
+  writeJSON(EVENTS_FILE, { events: Array.isArray(data?.events) ? data.events : [] })
+  return { ok: true }
+})
 
 // Settings
 ipcMain.handle('settings:load', () => loadSettings())
@@ -653,6 +762,7 @@ app.whenReady().then(() => {
   createTray()
   createWindow({ startHidden: process.argv.includes('--hidden') })
   startFocusGuard()
+  startEventReminders()
   app.on('activate', () => { showMainWindow() })
 })
 

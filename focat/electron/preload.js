@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('electron', {
   loadName:      ()      => ipcRenderer.invoke('name:load'),
   loadTasks:     ()      => ipcRenderer.invoke('tasks:load'),
   saveTasks:     (data)  => ipcRenderer.invoke('tasks:save', data),
+  loadEvents:    ()      => ipcRenderer.invoke('events:load'),
+  saveEvents:    (data)  => ipcRenderer.invoke('events:save', data),
   loadSettings:  ()      => ipcRenderer.invoke('settings:load'),
   saveSettings:  (s)     => ipcRenderer.invoke('settings:save', s),
   decomposeTask: (task, deadline)  => ipcRenderer.invoke('ai:decompose', { task, deadline }),
