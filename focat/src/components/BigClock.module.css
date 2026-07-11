@@ -8,11 +8,19 @@
   height: 100%;
 }
 
+.largeContainer {
+  gap: 24px;
+}
+
 .wrap {
   position: relative;
   width: min(100%, 280px);
   aspect-ratio: 1;
   flex-shrink: 0;
+}
+
+.largeWrap {
+  width: min(100%, 420px);
 }
 
 .ring {
@@ -38,18 +46,28 @@
   color: #000000;
   letter-spacing: 2px;
   line-height: 1;
+  transition: color 0.4s ease;
 }
 
-.gold { color: #9F8700; }
-.red  { color: #C8320A; }
-
-.ringAlert {
-  animation: ringPulse 1s ease-in-out infinite;
+.gold    { color: #9F8700; }
+.overtime {
+  color: #f71647;
+  animation: overtimePulse 1.4s ease-in-out infinite;
 }
 
-@keyframes ringPulse {
-  0%,100% { opacity: 1; }
-  50%      { opacity: .4; }
+.overtimeRing {
+  animation: overtimeRingPulse 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(247, 22, 71, 0.5));
+}
+
+@keyframes overtimePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+@keyframes overtimeRingPulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(247, 22, 71, 0.5)); }
+  50%       { filter: drop-shadow(0 0 10px rgba(247, 22, 71, 0.85)); }
 }
 
 /* Controls */
@@ -89,4 +107,20 @@
 .controlBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Large (focus mode) controls */
+.controlBtnLarge {
+  width: 50px;
+  height: 50px;
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.controlBtnLarge:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #FFFFFF;
 }

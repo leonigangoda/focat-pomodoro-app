@@ -61,6 +61,36 @@
   width: 100%;
   flex: 1;
   min-height: 0;
+  position: relative;  /* needed for expand button absolute positioning */
+}
+
+/* Expand / Enter Focus button — top-right of timer box */
+.expandBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(159, 135, 0, 0.3);
+  color: #9F8700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+.expandBtn:hover {
+  background: #FFFFFF;
+  border-color: #9F8700;
+  color: #5C4400;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+}
+.expandBtn:active {
+  transform: scale(0.94);
 }
 
 .musicBox {

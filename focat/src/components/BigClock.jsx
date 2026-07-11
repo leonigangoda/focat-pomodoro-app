@@ -2,46 +2,69 @@ import React from 'react'
 import CatSvg from './CatSvg'
 import styles from './BigClock.module.css'
 
-export default function BigClock({ timer, catAccessory }) {
-  // Ring math
+export default function BigClock({ timer, catAccessory, large = false }) {
   const CIRCUMFERENCE = 2 * Math.PI * 90  // r=90
-  const offset = CIRCUMFERENCE * (1 - timer.progress)
-  const isRed  = timer.state === 'overtime'
-  const isGold = timer.isNearEnd
 
-  const ringColor = isRed ? '#E84B2A' : isGold ? '#9F8700' : '#9F8700'
-  const ringClass = isRed ? styles.ringAlert : ''
+  // Normal ring offset (gold) — full when overtime
+  const normalOffset = CIRCUMFERENCE * (1 - timer.progress)
 
-  const isRunning = timer.state === 'running'
+  // Overtime ring offset (red) — fills as overtime progresses
+  const overtimeOffset = CIRCUMFERENCE * (1 - (timer.overtimeProgress || 0))
+
+  const isRunning = timer.state === 'running' || timer.state === 'overtime'
+
+  // Digit color class
+  const digitClass = timer.isOvertime
+    ? styles.overtime
+    : timer.isNearEnd
+    ? styles.gold
+    : ''
 
   return (
-    <div className={styles.clockContainer}>
-      <div className={styles.wrap}>
-        {/* Ring */}
+    <div className={`${styles.clockContainer} ${large ? styles.largeContainer : ''}`}>
+      <div className={`${styles.wrap} ${large ? styles.largeWrap : ''}`}>
+
+        {/* Ring SVG */}
         <svg className={styles.ring} viewBox="0 0 200 200">
           {/* Track */}
           <circle cx="100" cy="100" r="90" fill="none" stroke="#EFCB00" strokeWidth="12"/>
-          {/* Progress */}
+
+          {/* Gold progress ring */}
           <circle
             cx="100" cy="100" r="90"
             fill="none"
-            stroke={ringColor}
+            stroke="#9F8700"
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={offset}
+            strokeDashoffset={normalOffset}
             transform="rotate(-90 100 100)"
-            style={{ transition: 'stroke-dashoffset .8s ease, stroke .4s' }}
-            className={ringClass}
+            style={{ transition: 'stroke-dashoffset .8s ease' }}
           />
+
+          {/* Red overtime ring — overlays gold ring, fills from 0 as overtime grows */}
+          {timer.isOvertime && (
+            <circle
+              cx="100" cy="100" r="90"
+              fill="none"
+              stroke="#f71647"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeDasharray={CIRCUMFERENCE}
+              strokeDashoffset={overtimeOffset}
+              transform="rotate(-90 100 100)"
+              style={{ transition: 'stroke-dashoffset .8s ease' }}
+              className={styles.overtimeRing}
+            />
+          )}
         </svg>
 
         {/* Center content */}
         <div className={styles.center}>
-          <div className={`${styles.timerDigits} ${isRed ? styles.red : isGold ? styles.gold : ''}`}>
+          <div className={`${styles.timerDigits} ${digitClass}`}>
             {timer.state === 'idle' ? '00:00' : timer.display}
           </div>
-          <CatSvg mode={timer.catMode} size={80} accessory={catAccessory} />
+          <CatSvg mode={timer.catMode} size={large ? 96 : 80} accessory={catAccessory} />
         </div>
       </div>
 
@@ -49,7 +72,7 @@ export default function BigClock({ timer, catAccessory }) {
       <div className={styles.controls}>
         {/* Play / Pause */}
         <button
-          className={styles.controlBtn}
+          className={`${styles.controlBtn} ${large ? styles.controlBtnLarge : ''}`}
           onClick={isRunning ? timer.pause : timer.resume}
           title={isRunning ? 'Pause' : 'Play'}
         >
@@ -66,7 +89,7 @@ export default function BigClock({ timer, catAccessory }) {
 
         {/* Reset */}
         <button
-          className={styles.controlBtn}
+          className={`${styles.controlBtn} ${large ? styles.controlBtnLarge : ''}`}
           onClick={timer.reset}
           title="Reset"
           disabled={timer.state === 'idle'}
