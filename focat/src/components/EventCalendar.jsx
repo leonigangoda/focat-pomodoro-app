@@ -7,7 +7,7 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
-const EVENT_COLORS = ['#EFCB00', '#9F8700', '#5C4400', '#C8320A', '#2E7D32', '#4B4B54']
+const EVENT_COLORS = ['#9F8700', '#5C4400', '#C8320A', '#2E7D32', '#4B4B54']
 
 function toDateKey(date) {
   const year = date.getFullYear()
@@ -115,6 +115,20 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
     setDateValue(dateKey)
   }
 
+  function handleCardClick(e, eventId) {
+    // If the click is on the delete button itself, let the delete button handle it
+    if (e.target.closest(`.${styles.deleteBtn}`)) return
+    if (window.confirm("Do you want to delete this event?")) {
+      onDeleteEvent(eventId)
+    }
+  }
+
+  function handleDeleteClick(eventId) {
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      onDeleteEvent(eventId)
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault()
     const trimmed = title.trim()
@@ -173,7 +187,7 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
           </button>
         </div>
         <div className={styles.drawerSubtitle}>
-          schedule your upcoming tasks so you wont miss deadlines
+          Schedule your upcoming tasks so you won't miss deadlines
         </div>
       </div>
 
@@ -238,23 +252,21 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
               placeholder="Event name"
               required
             />
-            <div className={styles.dateRow}>
-              <input
-                className={styles.dateInput}
-                type="date"
-                value={dateValue}
-                onChange={e => {
-                  setDateValue(e.target.value)
-                  setSelectedDate(e.target.value)
-                }}
-              />
-              <input
-                className={styles.timeInput}
-                type="time"
-                value={timeValue}
-                onChange={e => setTimeValue(e.target.value)}
-              />
-            </div>
+            <input
+              className={styles.dateInput}
+              type="date"
+              value={dateValue}
+              onChange={e => {
+                setDateValue(e.target.value)
+                setSelectedDate(e.target.value)
+              }}
+            />
+            <input
+              className={styles.timeInput}
+              type="time"
+              value={timeValue}
+              onChange={e => setTimeValue(e.target.value)}
+            />
 
             <div className={styles.reminderRow}>
               <select
@@ -307,8 +319,9 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
                   />
                 ))}
               </div>
-              <button className={styles.addBtn} type="submit">Add</button>
             </div>
+
+            <button className={styles.addBtn} type="submit">Add Event</button>
           </form>
 
           <div className={styles.eventArea}>
@@ -317,7 +330,12 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
             </div>
             <div className={styles.eventList}>
               {(selectedEvents.length > 0 ? selectedEvents : upcomingEvents).map(event => (
-                <div className={styles.eventCard} key={event.id}>
+                <div
+                  className={styles.eventCard}
+                  key={event.id}
+                  onClick={(e) => handleCardClick(e, event.id)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <span className={styles.eventColor} style={{ background: event.color }} />
                   <div className={styles.eventInfo}>
                     <div className={styles.eventTitle}>{event.title}</div>
@@ -338,10 +356,19 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
                       )}
                     </div>
                   </div>
-                  <button className={styles.deleteBtn} onClick={() => onDeleteEvent(event.id)} title="Delete event">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteClick(event.id)
+                    }}
+                    title="Delete event"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      <line x1="10" y1="11" x2="10" y2="17" />
+                      <line x1="14" y1="11" x2="14" y2="17" />
                     </svg>
                   </button>
                 </div>
