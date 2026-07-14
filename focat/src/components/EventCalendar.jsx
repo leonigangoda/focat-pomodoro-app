@@ -75,6 +75,7 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
   const [reminderType, setReminderType] = useState('none')
   const [customValue, setCustomValue] = useState('10')
   const [customUnit, setCustomUnit] = useState('minutes')
+  const [deletingEventId, setDeletingEventId] = useState(null)
 
   const calendarDays = useMemo(() => makeCalendarDays(viewDate), [viewDate])
 
@@ -115,18 +116,8 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
     setDateValue(dateKey)
   }
 
-  function handleCardClick(e, eventId) {
-    // If the click is on the delete button itself, let the delete button handle it
-    if (e.target.closest(`.${styles.deleteBtn}`)) return
-    if (window.confirm("Do you want to delete this event?")) {
-      onDeleteEvent(eventId)
-    }
-  }
-
   function handleDeleteClick(eventId) {
-    if (window.confirm("Are you sure you want to delete this event?")) {
-      onDeleteEvent(eventId)
-    }
+    setDeletingEventId(eventId)
   }
 
   function handleSubmit(e) {
@@ -260,12 +251,14 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
                 setDateValue(e.target.value)
                 setSelectedDate(e.target.value)
               }}
+              onClick={e => e.target.showPicker?.()}
             />
             <input
               className={styles.timeInput}
               type="time"
               value={timeValue}
               onChange={e => setTimeValue(e.target.value)}
+              onClick={e => e.target.showPicker?.()}
             />
 
             <div className={styles.reminderRow}>
@@ -333,8 +326,6 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
                 <div
                   className={styles.eventCard}
                   key={event.id}
-                  onClick={(e) => handleCardClick(e, event.id)}
-                  style={{ cursor: 'pointer' }}
                 >
                   <span className={styles.eventColor} style={{ background: event.color }} />
                   <div className={styles.eventInfo}>
@@ -380,6 +371,32 @@ export default function EventCalendar({ events, onAddEvent, onDeleteEvent, onClo
           </div>
         </div>
       </div>
+      {/* Themed Confirmation Modal */}
+      {deletingEventId && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalBox}>
+            <div className={styles.modalTitle}>Delete Event?</div>
+            <div className={styles.modalSubtitle}>Are you sure you want to remove this event?</div>
+            <div className={styles.modalBtns}>
+              <button
+                className={`${styles.modalBtn} ${styles.modalYes}`}
+                onClick={() => {
+                  onDeleteEvent(deletingEventId)
+                  setDeletingEventId(null)
+                }}
+              >
+                Yes, Delete
+              </button>
+              <button
+                className={`${styles.modalBtn} ${styles.modalNo}`}
+                onClick={() => setDeletingEventId(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
