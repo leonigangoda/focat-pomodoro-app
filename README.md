@@ -26,9 +26,9 @@ Setup asks for exactly two things: your name, and your learning style (visual, a
 
 ## Core Features
 
-**Task decomposition (Gemini-powered)** :
+**Task decomposition (Groq-powered)** :
 
-Type a task into the home screen and it's sent to an embedded task-decomposing agent (Gemini API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
+Type a task into the home screen and it's sent to an embedded task-decomposing agent (Groq API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
 
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/9846e254-21eb-46e3-94ac-c8a82298da97" />
 
@@ -48,7 +48,7 @@ As a deadline approaches, the step list automatically trims down to the highest-
 
 A built-in Pomodoro clock for working in focused intervals with built-in breaks.
 
-**Focus sessions** *(in progress)* :
+**Focus sessions** _(in progress)_ :
 
 A distraction-minimized timer screen with ambient visual and audio cues that simulate the accountability effect of working alongside someone else, without requiring a live video connection.
 
@@ -57,7 +57,6 @@ A distraction-minimized timer screen with ambient visual and audio cues that sim
 Background music playback during focus sessions. These promote the music that ADHD people usually use to stay focused like, brown noise and white noise, space music, lofi rain etc.
 
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/3126f45c-c2ae-4cbc-aa86-e83a8def1cbb" />
-
 
 **Gentle re-engagement notifications** :
 
@@ -85,7 +84,7 @@ Notification sounds use cat sound effects, and UI interactions have their own cu
 - **Frontend:** React 18 with Vite
 - **Language:** JavaScript / JSX
 - **Styling:** CSS Modules, global CSS, Google Fonts
-- **AI Integration:** Google Gemini API via REST, using `gemini-2.0-flash`
+- **AI Integration:** Groq API via REST, using `llama-3.3-70b-versatile`
 - **State & Logic:** React hooks for timer, tasks, settings, music, and interaction feedback
 - **Local Storage:** Electron `userData` JSON files for tasks, settings, username, and app usage
 - **Secure Storage:** Electron `safeStorage` for encrypted API key storage
@@ -97,7 +96,7 @@ Notification sounds use cat sound effects, and UI interactions have their own cu
 ## Technical Approach
 
 - Built with Electron, giving the app OS-level access needed for activity detection and system notifications that a browser-based app can't provide. React and Vite handle the UI layer on top of Electron's frameless, custom window.
-- Task decomposition calls the Gemini API (`gemini-2.0-flash`) over REST and requires an internet connection. This is the one feature explicitly allowed to depend on external services. The Gemini API key is stored encrypted on-device via Electron's `safeStorage`, never in plaintext.
+- Task decomposition calls the Groq API (`llama-3.3-70b-versatile`) over REST and requires an internet connection. This is the one feature explicitly allowed to depend on external services. The Groq API key is stored encrypted on-device via Electron's `safeStorage`, never in plaintext.
 - Activity monitoring for doomscrolling detection runs locally via a background focus guard process, using Electron IPC to communicate with the main UI.
 - Tasks, settings, username, and usage data are stored locally as JSON files in Electron's `userData` directory — nothing is synced to a server by default.
 - Focus sounds are generated using the Web Audio API; notification sounds use local WAV assets.
@@ -105,17 +104,17 @@ Notification sounds use cat sound effects, and UI interactions have their own cu
 
 ## Privacy Note
 
-Focat monitors local app and browser activity in order to detect doomscrolling and trigger the YouTube check-in flow. This monitoring is used only to drive in-app prompts and is not transmitted anywhere except where a task is explicitly sent to the Gemini API for decomposition.
+Focat monitors local app and browser activity in order to detect doomscrolling and trigger the YouTube check-in flow. This monitoring is used only to drive in-app prompts and is not transmitted anywhere except where a task is explicitly sent to the Groq API for decomposition.
 
-Task content sent to the Gemini API is used only to generate that task's breakdown. Note that data-usage terms for the Gemini *developer API* differ from Google's consumer Gemini app, and those terms can change — see Google's current Gemini API usage policies before relying on this for anything beyond a personal project.
+Task content sent to the Groq API is used only to generate that task's breakdown. Note that data-usage terms for the Groq API differ from consumer chat apps, and those terms can change — see Groq's current API usage policies before relying on this for anything beyond a personal project.
 
 ## Status
 
-This is an early-stage personal project. Features described above are in various states of design and implementation — this document reflects the intended product, not necessarily the current build. Items marked *(in progress)* are not yet complete.
+This is an early-stage personal project. Features described above are in various states of design and implementation — this document reflects the intended product, not necessarily the current build. Items marked _(in progress)_ are not yet complete.
 
 ## Known Limitations
 
 - Focus Sessions with simulated body doubling are still in progress and not yet complete.
-- Task decomposition quality depends on internet availability, since it relies on the Gemini API.
+- Task decomposition quality depends on internet availability, since it relies on the Groq API.
 - Doomscrolling detection is best-effort based on local activity monitoring and won't catch every distraction pattern.
 - This is not a mental health application and should not be used as one.
