@@ -16,9 +16,15 @@ export default function BigClock({ timer, catAccessory, large = false }) {
   // Digit color class
   const digitClass = timer.isOvertime
     ? styles.overtime
+    : timer.isBreak
+    ? styles.breakDigits
     : timer.isNearEnd
     ? styles.gold
     : ''
+
+  // Ring colors during break — use a calm teal instead of gold
+  const ringTrackColor   = timer.isBreak ? '#78C8B0' : '#EFCB00'
+  const ringFillColor    = timer.isBreak ? '#3D9B82' : '#9F8700'
 
   return (
     <div className={`${styles.clockContainer} ${large ? styles.largeContainer : ''}`}>
@@ -27,19 +33,19 @@ export default function BigClock({ timer, catAccessory, large = false }) {
         {/* Ring SVG */}
         <svg className={styles.ring} viewBox="0 0 200 200">
           {/* Track */}
-          <circle cx="100" cy="100" r="90" fill="none" stroke="#EFCB00" strokeWidth="12"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke={ringTrackColor} strokeWidth="12"/>
 
-          {/* Gold progress ring */}
+          {/* Progress ring */}
           <circle
             cx="100" cy="100" r="90"
             fill="none"
-            stroke="#9F8700"
+            stroke={ringFillColor}
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={normalOffset}
             transform="rotate(-90 100 100)"
-            style={{ transition: 'stroke-dashoffset .8s ease' }}
+            style={{ transition: 'stroke-dashoffset .8s ease, stroke 0.6s ease' }}
           />
 
           {/* Red overtime ring — overlays gold ring, fills from 0 as overtime grows */}
@@ -61,6 +67,13 @@ export default function BigClock({ timer, catAccessory, large = false }) {
 
         {/* Center content */}
         <div className={styles.center}>
+          {/* Break label */}
+          {timer.isBreak && (
+            <div className={`${styles.breakLabel} ${large ? styles.breakLabelLarge : ''}`}>
+              ☕ BREAK
+            </div>
+          )}
+
           <div className={`${styles.timerDigits} ${digitClass}`}>
             {timer.state === 'idle' ? '00:00' : timer.display}
           </div>
@@ -99,6 +112,30 @@ export default function BigClock({ timer, catAccessory, large = false }) {
             <path d="M3 3v5h5" />
           </svg>
         </button>
+      </div>
+
+      {/* Mode Selector Buttons */}
+      <div className={styles.modes}>
+        {[25, 50].map(mode => {
+          const isSelected = timer.selectedMode === mode
+          return (
+            <button
+              key={mode}
+              className={[
+                styles.modeBtn,
+                large ? styles.modeBtnLarge : '',
+                isSelected
+                  ? (large ? styles.modeBtnSelectedLarge : styles.modeBtnSelected)
+                  : (large ? styles.modeBtnInactiveLarge : styles.modeBtnInactive),
+              ].join(' ')}
+              onClick={() => timer.changeMode(mode)}
+              disabled={timer.isBreak}
+              title={`${mode} min focus session`}
+            >
+              {mode} min
+            </button>
+          )
+        })}
       </div>
     </div>
   )

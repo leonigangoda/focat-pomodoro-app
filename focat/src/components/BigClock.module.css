@@ -49,7 +49,8 @@
   transition: color 0.4s ease;
 }
 
-.gold    { color: #9F8700; }
+.gold       { color: #9F8700; }
+.breakDigits { color: #3D9B82; }
 .overtime {
   color: #f71647;
   animation: overtimePulse 1.4s ease-in-out infinite;
@@ -68,6 +69,33 @@
 @keyframes overtimeRingPulse {
   0%, 100% { filter: drop-shadow(0 0 4px rgba(247, 22, 71, 0.5)); }
   50%       { filter: drop-shadow(0 0 10px rgba(247, 22, 71, 0.85)); }
+}
+
+/* Break label */
+.breakLabel {
+  font-family: 'Gaegu', cursive;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #3D9B82;
+  background: rgba(61, 155, 130, 0.1);
+  border: 1.5px solid rgba(61, 155, 130, 0.3);
+  border-radius: 20px;
+  padding: 2px 10px;
+  animation: breakPulse 2.2s ease-in-out infinite;
+}
+
+.breakLabelLarge {
+  font-size: 14px;
+  padding: 3px 14px;
+  color: rgba(120, 200, 176, 0.9);
+  background: rgba(61, 155, 130, 0.15);
+  border-color: rgba(120, 200, 176, 0.35);
+}
+
+@keyframes breakPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
 }
 
 /* Controls */
@@ -123,4 +151,93 @@
   background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.5);
   color: #FFFFFF;
+}
+
+/* ── Mode selector buttons ──────────────────────────────────────────────── */
+
+.modes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Base mode button — matches control button height/radius/font */
+.modeBtn {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 30px;
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modeBtn:active:not(:disabled) {
+  transform: translateY(4px) scale(0.96);
+  box-shadow: inset 0 3px 0 rgba(92, 68, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.modeBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Selected state (standard layout) */
+.modeBtnSelected {
+  background: #9F8700;
+  border: 2px solid #9F8700;
+  color: #FFFFFF;
+}
+.modeBtnSelected:hover:not(:disabled) {
+  background: #8A7000;
+  border-color: #8A7000;
+  transform: scale(1.05);
+}
+
+/* Inactive state (standard layout) */
+.modeBtnInactive {
+  background: #FFFFFF;
+  border: 2px solid #FFEF95;
+  color: #8A6800;
+}
+.modeBtnInactive:hover:not(:disabled) {
+  background: #FFFCEB;
+  border-color: #EFCB00;
+  color: #9F8700;
+  transform: scale(1.05);
+}
+
+/* Large (focus mode) mode button */
+.modeBtnLarge {
+  height: 42px;
+  padding: 0 22px;
+  font-size: 15px;
+}
+
+/* Selected state (large / focus overlay) */
+.modeBtnSelectedLarge {
+  background: rgba(239, 203, 0, 0.25);
+  border: 2px solid rgba(239, 203, 0, 0.75);
+  color: #FFE656;
+}
+.modeBtnSelectedLarge:hover:not(:disabled) {
+  background: rgba(239, 203, 0, 0.35);
+  border-color: rgba(239, 203, 0, 0.95);
+  transform: scale(1.05);
+}
+
+/* Inactive state (large / focus overlay) */
+.modeBtnInactiveLarge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.55);
+}
+.modeBtnInactiveLarge:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.85);
+  transform: scale(1.05);
 }
