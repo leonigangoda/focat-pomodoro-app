@@ -5,3 +5,7 @@ dist-electron/
 .DS_Store
 Thumbs.db
 public/sounds/*.mp3
+.env
+**/ .env
+focat/.env
+

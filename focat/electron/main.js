@@ -12,6 +12,26 @@ const API_KEY_FILE = path.join(USER_DATA, 'apikey.enc')
 const NAME_FILE = path.join(USER_DATA, 'username.txt')
 const USAGE_FILE = path.join(USER_DATA, 'app-usage.json')
 
+function loadDotEnv() {
+  const envPath = path.resolve(__dirname, '..', '.env')
+  if (!fs.existsSync(envPath)) return
+
+  const lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/)
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+    if (!line || line.startsWith('#')) continue
+    const separatorIndex = line.indexOf('=')
+    if (separatorIndex < 0) continue
+
+    const key = line.slice(0, separatorIndex).trim()
+    const value = line.slice(separatorIndex + 1).trim().replace(/^['"]|['"]$/g, '')
+    if (!key || process.env[key] !== undefined) continue
+    process.env[key] = value
+  }
+}
+
+loadDotEnv()
+
 let mainWindow = null
 let notificationWindow = null
 let pendingNotificationData = null
@@ -269,7 +289,7 @@ function configureBackgroundStartup() {
   })
 }
 
-// --- API Key (Gemini) ---
+// --- API Key (Groq) ---
 function saveApiKey(key) {
   if (safeStorage.isEncryptionAvailable()) {
     fs.writeFileSync(API_KEY_FILE, safeStorage.encryptString(key))
@@ -289,11 +309,8 @@ function loadApiKey() {
 }
 
 function loadConfiguredApiKey() {
-  return loadApiKey()
-    || process.env.GEMINI_API_KEY
-    || process.env.GOOGLE_API_KEY
-    || process.env.GOOGLE_GENERATIVE_AI_API_KEY
-    || null
+  const envKey = process.env.MY_API_KEY?.trim()
+  return envKey || null
 }
 
 // --- User Name ---
@@ -615,7 +632,7 @@ function startEventReminders() {
 ipcMain.on('win:minimize', () => mainWindow?.minimize())
 ipcMain.on('win:close', () => mainWindow?.close())
 
-// API key (Gemini)
+// API key (Groq)
 ipcMain.handle('apikey:save', (_, key) => { saveApiKey(key); return { ok: true } })
 ipcMain.handle('apikey:exists', () => !!loadConfiguredApiKey())
 
@@ -642,27 +659,24 @@ ipcMain.handle('settings:save', (_, s) => {
   return { ok: true }
 })
 
-// AI decompose via Gemini REST API (free tier, with retry for rate limits)
+// AI decompose via Groq REST API (with retry for rate limits)
 ipcMain.handle('ai:decompose', async (_, { task, deadline }) => {
   const apiKey = loadConfiguredApiKey()
-  if (!apiKey) return { error: 'AI setup is missing a Gemini API key. Set GEMINI_API_KEY before launching focat.' }
+  if (!apiKey) return { error: 'AI setup is missing an API key. Set MY_API_KEY before launching focat.' }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`
-  
+  const url = 'https://api.groq.com/openai/v1/chat/completions'
   const deadlinePrompt = deadline ? `\nAvailable Time/Deadline: "${deadline}". Plan the subtask estimates within this constraint where possible.` : ''
   const body = JSON.stringify({
-    contents: [{
-      parts: [{
-        text: `Break this task into 3-6 actionable subtasks, each completable in 15-35 minutes.${deadlinePrompt}
+    model: 'llama-3.3-70b-versatile',
+    messages: [{
+      role: 'user',
+      content: `Break this task into 3-6 actionable subtasks, each completable in 15-35 minutes.${deadlinePrompt}
 Task: "${task}"
 Return ONLY a JSON array, no markdown, no explanation:
 [{"id":"1","title":"subtask","estimatedMinutes":25,"notes":"tip"},...]`
-      }]
     }],
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 1024,
-    }
+    temperature: 0.7,
+    max_tokens: 1024,
   })
 
   const MAX_RETRIES = 3
@@ -670,27 +684,29 @@ Return ONLY a JSON array, no markdown, no explanation:
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
         body
       })
 
-      // Rate limited — wait and retry
       if (response.status === 429) {
-        const waitSec = Math.pow(2, attempt + 1) // 2s, 4s, 8s
+        const waitSec = Math.pow(2, attempt + 1)
         if (attempt < MAX_RETRIES - 1) {
           await new Promise(r => setTimeout(r, waitSec * 1000))
           continue
         }
-        return { error: 'Rate limited — the free Gemini tier allows 15 requests/min. Wait a moment and try again.' }
+        return { error: 'Rate limited — the Groq API allows a limited number of requests/minute. Wait a moment and try again.' }
       }
 
       if (!response.ok) {
         const errBody = await response.text()
-        throw new Error(`Gemini API error (${response.status}): ${errBody}`)
+        throw new Error(`Groq API error (${response.status}): ${errBody}`)
       }
 
       const data = await response.json()
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      const text = data.choices?.[0]?.message?.content || ''
       const clean = text.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim()
       const subtasks = JSON.parse(clean)
 
