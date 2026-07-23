@@ -10,9 +10,15 @@ export default function SubtaskList({
   const [editValue, setEditValue] = useState('')
   const [confirmDoneId, setConfirmDoneId] = useState(null)
 
-  const allSubtasks = tasks.flatMap(task =>
-    task.subtasks.map(s => ({ ...s, taskId: task.id, taskTitle: task.title }))
+  const pendingSubtasks = tasks.flatMap(task =>
+    task.subtasks
+      .filter(s => s.status !== 'done')
+      .map(s => ({ ...s, taskId: task.id, taskTitle: task.title }))
   )
+
+  const activeSub = pendingSubtasks.find(s => s.id === activeId)
+  const otherSubs = pendingSubtasks.filter(s => s.id !== activeId)
+  const allSubtasks = activeSub ? [activeSub, ...otherSubs] : pendingSubtasks
 
   if (allSubtasks.length === 0) return (
     <div className={styles.empty}>
