@@ -8,6 +8,7 @@ export default function SubtaskList({
 }) {
   const [editingId, setEditingId] = useState(null)
   const [editValue, setEditValue] = useState('')
+  const [confirmDoneId, setConfirmDoneId] = useState(null)
 
   const allSubtasks = tasks.flatMap(task =>
     task.subtasks.map(s => ({ ...s, taskId: task.id, taskTitle: task.title }))
@@ -59,7 +60,7 @@ export default function SubtaskList({
             key={sub.id}
             className={`${styles.card} ${isActive ? styles.active : ''} ${isDone ? styles.done : ''} fade-in`}
             data-click-feedback={!isDone && !isEditing ? 'true' : undefined}
-            onClick={() => !isDone && !isEditing && onStart(sub.taskId, sub)}
+            onClick={() => !isDone && !isEditing && !isActive && onStart(sub.taskId, sub)}
           >
             {/* Delete button */}
             <button
@@ -107,7 +108,7 @@ export default function SubtaskList({
             {/* Hollow circle check */}
             <button
               className={`${styles.check} ${isDone ? styles.checked : ''}`}
-              onClick={e => { e.stopPropagation(); onDone(sub.taskId, sub.id) }}
+              onClick={e => { e.stopPropagation(); setConfirmDoneId(sub.id) }}
               title="Mark done"
             >
               {isDone && (
@@ -119,6 +120,32 @@ export default function SubtaskList({
           </div>
         )
       })}
+      
+      {confirmDoneId && (
+        <div className={styles.modalOverlay} onClick={() => setConfirmDoneId(null)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <p>Are you sure this task is finished?</p>
+            <div className={styles.modalButtons}>
+              <button 
+                className={styles.modalYesBtn} 
+                onClick={() => {
+                  const sub = allSubtasks.find(s => s.id === confirmDoneId)
+                  if (sub) onDone(sub.taskId, sub.id)
+                  setConfirmDoneId(null)
+                }}
+              >
+                Yes
+              </button>
+              <button 
+                className={styles.modalNoBtn} 
+                onClick={() => setConfirmDoneId(null)}
+              >
+                Not yet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
