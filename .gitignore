@@ -5,7 +5,13 @@ dist-electron/
 .DS_Store
 Thumbs.db
 public/sounds/*.mp3
+HEAD:.gitignore
 .env
 **/ .env
 focat/.env
 
+
+.env
+.env.local
+.env.*.local
+feature/incompletemodifications:focat/.gitignore
