@@ -77,7 +77,17 @@ export default function BigClock({ timer, catAccessory, large = false }) {
           <div className={`${styles.timerDigits} ${digitClass}`}>
             {timer.state === 'idle' ? '00:00' : timer.display}
           </div>
-          <CatSvg mode={timer.catMode} size={large ? 96 : 80} accessory={catAccessory} />
+          {timer.state === 'running' && !timer.isBreak ? (
+            <img
+              src="/timer-cat.gif"
+              alt="Cooking cat"
+              width={large ? 96 : 80}
+              height={large ? 96 : 80}
+              style={{ imageRendering: 'pixelated', objectFit: 'contain' }}
+            />
+          ) : (
+            <CatSvg mode={timer.catMode} size={large ? 96 : 80} accessory={catAccessory} />
+          )}
         </div>
       </div>
 
