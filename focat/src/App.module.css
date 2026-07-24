@@ -157,33 +157,3 @@
   transform: translateX(0);
 }
 
-.rightPanelHeader {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: -4px;
-}
-
-.calendarToggleBtn {
-  background: #FFFADB;
-  border: 2px solid #EFCB00;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #5C4400;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-}
-
-.calendarToggleBtn:hover {
-  background: #FFFFFF;
-  border-color: #9F8700;
-  transform: scale(1.08);
-}
-
-.calendarToggleBtn:active {
-  transform: scale(0.95);
-}

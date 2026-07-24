@@ -127,12 +127,15 @@ export default function SubtaskList({
     <div className={styles.list}>
       {activeSub && (
         <div className={styles.nowZone}>
-          <div className={styles.zoneLabel}>Now</div>
+          <div className={styles.zoneLabel}>Currently focusing</div>
           {renderSubtaskCard(activeSub, 'now')}
         </div>
       )}
 
-      {pendingSubtasks.map(sub => renderSubtaskCard(sub))}
+      <div className={styles.queueZone}>
+        <div className={styles.zoneLabel}>Next</div>
+        {pendingSubtasks.map(sub => renderSubtaskCard(sub))}
+      </div>
 
       {confirmDoneId && (
         <div className={styles.modalOverlay} onClick={() => setConfirmDoneId(null)}>
