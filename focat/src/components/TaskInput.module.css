@@ -6,29 +6,49 @@
   border-radius: 30px;
   padding: 10px 18px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   transition: background 0.2s, border-color .2s;
 }
 .bar.active {
   background: #FFE656;
 }
-.bar:focus-within { border-color: #9F8700; }
+.bar.promptActive {
+  background: #fff1a4;
+}
+.bar:focus-within { border-color: #EFCB00; }
 
-.icon { flex-shrink: 0; }
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
 .input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
+  padding: 0;
   font-family: 'Gaegu', cursive;
   font-size: 15px;
   font-weight: 600;
   color: #5C4400;
+  line-height: 1.35;
+  min-height: 20px;
+  max-height: 81px;
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #EFCB00 transparent;
 }
 .input::placeholder { color: #B89030; }
 .input:disabled { opacity: .6; }
+.input::-webkit-scrollbar { width: 4px; }
+.input::-webkit-scrollbar-track { background: transparent; }
+.input::-webkit-scrollbar-thumb {
+  background: #EFCB00;
+  border-radius: 10px;
+}
 
 .spinner {
   width: 16px; height: 16px;

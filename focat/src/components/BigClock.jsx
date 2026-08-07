@@ -76,24 +76,27 @@ export default function BigClock({ timer, catAccessory, large = false }) {
           <div className={`${styles.timerDigits} ${digitClass}`}>
             {timer.state === 'idle' ? '00:00' : timer.display}
           </div>
-          {timer.state === 'idle' ? (
+          {timer.state === 'running' && !timer.isBreak ? (
             <img
-              src="dist/assets/cats/cat-idle.gif"
-              alt="idle cat"
-              width={large ? 96 : 80}
-              height={large ? 96 : 80}
-              style={{ imageRendering: 'pixelated', objectFit: 'contain' }}
-            />
-          ) : timer.state === 'running' && !timer.isBreak ? (
-            <img
-              src="/assets/cats/timer-cat.gif"
+              src="dist/assets/cats/timer cat.gif"
               alt="cat licking paws"
               width={large ? 96 : 80}
               height={large ? 96 : 80}
               style={{ imageRendering: 'pixelated', objectFit: 'contain' }}
             />
           ) : (
-            <div style={{ width: large ? 96 : 80, height: large ? 96 : 80 }} />
+            <img
+              src="dist/assets/cats/cat-idle.gif"
+              alt="idle cat"
+              width={large ? 100 : 90}
+              height={large ? 100 : 90}
+              style={{
+                imageRendering: 'pixelated',
+                objectFit: 'contain',
+                transform: 'scale(1.15)',
+                transformOrigin: 'center',
+              }}
+            />
           )}
         </div>
       </div>

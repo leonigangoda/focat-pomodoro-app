@@ -1,15 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './TaskInput.module.css'
 
 export default function TaskInput({ onSubmit, decomposing, error, userName, timerRunning }) {
   const [value, setValue] = useState('')
   const [pendingTitle, setPendingTitle] = useState(null)
   const [deadlineValue, setDeadlineValue] = useState('')
+  const [inputFocused, setInputFocused] = useState(false)
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    const input = inputRef.current
+    if (!input) return
+    input.style.height = 'auto'
+    input.style.height = `${Math.min(input.scrollHeight, 81)}px`
+  }, [value])
 
   async function handleKey(e) {
-    if (e.key === 'Enter' && value.trim()) {
+    if (e.key === 'Enter' && !e.shiftKey && value.trim()) {
+      e.preventDefault()
       setPendingTitle(value.trim())
       setValue('')
+      setInputFocused(false)
     }
   }
 
@@ -40,22 +51,28 @@ export default function TaskInput({ onSubmit, decomposing, error, userName, time
   const placeholder = userName
     ? `What are we working on today, ${userName}?`
     : 'What are we working on today?'
+  const inputActive = !pendingTitle && !decomposing && (inputFocused || value.length > 0)
 
   return (
     <div className={styles.wrap}>
-      <div className={`${styles.bar} ${timerRunning ? styles.active : ''}`}>
+      <div className={`${styles.bar} ${timerRunning ? styles.active : ''} ${inputActive ? styles.promptActive : ''}`}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className={styles.icon}>
           <circle cx="7.5" cy="7.5" r="5.5" stroke="#9F8700" strokeWidth="1.8"/>
           <line x1="11.5" y1="11.5" x2="16" y2="16" stroke="#9F8700" strokeWidth="1.8" strokeLinecap="round"/>
         </svg>
-        <input
-          type="text"
+        <textarea
+          ref={inputRef}
           placeholder={placeholder}
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyDown={handleKey}
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => {
+            if (!value.trim()) setInputFocused(false)
+          }}
           className={styles.input}
           disabled={decomposing || !!pendingTitle}
+          rows={1}
         />
         {decomposing && <div className={styles.spinner} />}
       </div>
