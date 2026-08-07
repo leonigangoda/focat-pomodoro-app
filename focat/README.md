@@ -70,7 +70,6 @@ focat/
 │   └── components/
 │       ├── TitleBar.jsx/css     ← Top bar with minimize/close (top right)
 │       ├── BigClock.jsx/css     ← Ring timer + cat animation
-│       ├── CatSvg.jsx           ← Pixel cat: idle/cooking/done/tired
 │       ├── TaskInput.jsx/css    ← Search bar → AI decompose on Enter
 │       ├── SubtaskList.jsx/css  ← Subtask cards, click to start timer
 │       ├── MusicPlayer.jsx/css  ← Play/pause/skip + volume
