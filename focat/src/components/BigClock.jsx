@@ -1,5 +1,4 @@
 import React from 'react'
-import CatSvg from './CatSvg'
 import styles from './BigClock.module.css'
 
 export default function BigClock({ timer, catAccessory, large = false }) {
@@ -77,16 +76,24 @@ export default function BigClock({ timer, catAccessory, large = false }) {
           <div className={`${styles.timerDigits} ${digitClass}`}>
             {timer.state === 'idle' ? '00:00' : timer.display}
           </div>
-          {timer.state === 'running' && !timer.isBreak ? (
+          {timer.state === 'idle' ? (
             <img
-              src="dist\assets\cats\timer-cat.gif"
+              src="dist/assets/cats/cat-idle.gif"
+              alt="idle cat"
+              width={large ? 96 : 80}
+              height={large ? 96 : 80}
+              style={{ imageRendering: 'pixelated', objectFit: 'contain' }}
+            />
+          ) : timer.state === 'running' && !timer.isBreak ? (
+            <img
+              src="/assets/cats/timer-cat.gif"
               alt="cat licking paws"
               width={large ? 96 : 80}
               height={large ? 96 : 80}
               style={{ imageRendering: 'pixelated', objectFit: 'contain' }}
             />
           ) : (
-            <CatSvg mode={timer.catMode} size={large ? 96 : 80} accessory={catAccessory} />
+            <div style={{ width: large ? 96 : 80, height: large ? 96 : 80 }} />
           )}
         </div>
       </div>
