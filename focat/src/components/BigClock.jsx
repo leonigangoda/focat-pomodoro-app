@@ -86,7 +86,7 @@ export default function BigClock({ timer, catAccessory, large = false }) {
             />
           ) : (
             <img
-              src="dist/assets/cats/cat-idle.gif"
+              src="dist/assets/cats/cat idle.gif"
               alt="idle cat"
               width={large ? 100 : 90}
               height={large ? 100 : 90}
