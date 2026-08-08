@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import styles from './WelcomeScreen.module.css'
-import CatSvg from './CatSvg'
 
 const STUDY_PATTERNS = [
   {
@@ -57,7 +56,12 @@ export default function WelcomeScreen({ onComplete }) {
   return (
     <div className={styles.screen}>
       <div className={styles.card}>
-        <CatSvg mode="idle" size={80} accessory="chef-hat" />
+        <img
+          src="/assets/cats/focat-logo.svg"
+          alt="focat logo"
+          width={80}
+          height={80}
+        />
 
         <div className={styles.steps}>
           <div className={`${styles.dot} ${step >= 1 ? styles.dotActive : ''}`} />
