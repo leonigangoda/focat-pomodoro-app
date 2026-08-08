@@ -7,8 +7,7 @@ export default function TitleBar({ onSettings }) {
   return (
     <div className={styles.bar}>
       <div className={styles.logo}>
-        <img src="dist/assets/cats/focat-logo.svg" alt="focat logo" width={24} height={24} />
-        <span className={styles.name}>focat</span>
+        <img src="/assets/cats/focat-logo.svg" alt="focat logo" className={styles.logoImage} />
       </div>
 
       <div className={styles.controls}>

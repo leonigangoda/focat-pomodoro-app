@@ -1,11 +1,10 @@
 import React from 'react'
-import CatSvg from './CatSvg'
 import styles from './LoadingScreen.module.css'
 
 export default function LoadingScreen() {
   return (
     <div className={styles.screen}>
-      <CatSvg mode="idle" size={100} accessory="chef-hat" />
+      <img src="/assets/cats/focat-logo.svg" alt="focat logo" width={100} height={100} />
       <div className={styles.text}>Loading...</div>
     </div>
   )

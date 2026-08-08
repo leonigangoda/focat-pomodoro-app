@@ -13,16 +13,15 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 7px;
   flex: 1;
+  min-width: 0;
 }
 
-.name {
-  font-family: 'Gaegu', cursive;
-  font-weight: 700;
-  font-size: 17px;
-  color: #5C4400;
-  letter-spacing: 1px;
+.logoImage {
+  display: block;
+  width: auto;
+  height: 24px;
+  object-fit: contain;
 }
 
 .controls {
