@@ -57,7 +57,7 @@ export default function WelcomeScreen({ onComplete }) {
     <div className={styles.screen}>
       <div className={styles.card}>
         <img
-          src="dist/assets/cats/focat-logo.svg"
+          src="dist/assets/cats/focat-logo.png"
           alt="focat logo"
           className={styles.logo}
         />
