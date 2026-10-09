@@ -8,6 +8,13 @@
   gap: 16px;
 }
 
+.logo {
+  display: block;
+  width: clamp(150px, 24vw, 210px);
+  height: auto;
+  object-fit: contain;
+}
+
 .text {
   font-family: 'Gaegu', cursive;
   font-size: 18px;

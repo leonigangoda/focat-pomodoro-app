@@ -4,7 +4,7 @@ import styles from './LoadingScreen.module.css'
 export default function LoadingScreen() {
   return (
     <div className={styles.screen}>
-      <img src="dist/assets/cats/focat-logo.png" alt="focat logo" width={100} height={100} />
+      <img src="/assets/cats/focat-logo.svg" alt="focat logo" className={styles.logo} />
       <div className={styles.text}>Loading...</div>
     </div>
   )

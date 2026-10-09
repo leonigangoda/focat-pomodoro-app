@@ -78,7 +78,7 @@ export default function BigClock({ timer, catAccessory, large = false }) {
           </div>
           {timer.state === 'running' && !timer.isBreak ? (
             <img
-              src="dist/assets/cats/timer-cat.gif"
+              src="/assets/cats/timer-cat.gif"
               alt="cat licking paws"
               width={large ? 96 : 80}
               height={large ? 96 : 80}
@@ -86,7 +86,7 @@ export default function BigClock({ timer, catAccessory, large = false }) {
             />
           ) : (
             <img
-              src="dist/assets/cats/cat-idle.gif"
+              src="/assets/cats/cat-idle.gif"
               alt="idle cat"
               width={large ? 100 : 90}
               height={large ? 100 : 90}

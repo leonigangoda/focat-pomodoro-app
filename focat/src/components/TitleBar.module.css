@@ -1,5 +1,5 @@
 .bar {
-  height: 36px;
+  height: 52px;
   background: transparent;
   display: flex;
   align-items: center;
@@ -20,7 +20,8 @@
 .logoImage {
   display: block;
   width: auto;
-  height: 24px;
+  height: 44px;
+  max-width: 190px;
   object-fit: contain;
 }
 

@@ -1,0 +1,27 @@
+.player {
+  width: 100%; height: 54px; padding: 7px 10px;
+  display: flex; align-items: center; gap: 4px;
+  border: 1px solid rgba(164,107,60,.14); border-radius: 999px;
+  color: #a46b3c; background: rgba(255,255,255,.7);
+  box-shadow: 0 7px 22px rgba(164,107,60,.14); backdrop-filter: blur(9px);
+}
+.iconButton, .playButton {
+  flex: 0 0 auto; display: grid; place-items: center; border: 0; border-radius: 50%;
+  color: #a46b3c; background: transparent;
+}
+.iconButton { width: 31px; height: 31px; }
+.playButton { width: 38px; height: 38px; color: white; background: #a46b3c; box-shadow: 0 3px 9px rgba(164,107,60,.24); }
+.iconButton svg { width: 16px; height: 16px; fill: currentColor; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.playButton svg { width: 17px; height: 17px; fill: currentColor; }
+.iconButton:hover { background: #fff8eb; transform: scale(1.06); }
+.playButton:hover { background: #8f5b33; transform: scale(1.05); }
+.active { color: #d99b2b; background: #fff8eb; }
+.trackName {
+  min-width: 44px; flex: 1; margin: 0 6px; overflow: hidden;
+  font-family: 'Gaegu', cursive; font-size: 16px; font-weight: 700;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.volumeWrap { flex: 0 0 auto; display: flex; align-items: center; }
+.volumeOpen { gap: 3px; }
+.volumeSlider { width: clamp(50px, 7vw, 84px); accent-color: #a46b3c; cursor: pointer; }
+@media (max-width: 680px) { .player { height: 52px; } .trackName { font-size: 15px; } }

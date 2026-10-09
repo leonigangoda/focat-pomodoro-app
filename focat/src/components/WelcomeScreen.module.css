@@ -18,8 +18,8 @@
 
 .logo {
   display: block;
-  width: 80px;
-  height: 80px;
+  width: clamp(130px, 21vw, 180px);
+  height: auto;
   object-fit: contain;
 }
 

@@ -125,10 +125,10 @@
 
 .backdrop {
   position: absolute;
-  top: 36px;
+  top: 52px;
   left: 0;
   width: 100%;
-  height: calc(100% - 36px);
+  height: calc(100% - 52px);
   background: rgba(0, 0, 0, 0.4);
   z-index: 99;
   animation: fadeIn 0.25s ease-out;
@@ -141,10 +141,10 @@
 
 .calendarDrawer {
   position: absolute;
-  top: 36px;
+  top: 52px;
   left: 0;
   width: 75%;
-  height: calc(100% - 36px);
+  height: calc(100% - 52px);
   background: #FFE656;
   border-right: 2.5px solid #FFEF95;
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
