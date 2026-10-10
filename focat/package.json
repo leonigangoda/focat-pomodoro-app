@@ -9,7 +9,8 @@
     "build:mac": "vite build && electron-builder --mac",
     "build:win": "vite build && electron-builder --win",
     "build:linux": "vite build && electron-builder --linux",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test src/themes/*.test.mjs"
   },
   "dependencies": {
     "howler": "^2.2.4"

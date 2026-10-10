@@ -539,3 +539,99 @@
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+:global(html[data-theme='night']) .panel {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) :is(.drawerTitle, .drawerSubtitle) {
+  color: #FFF9B8;
+}
+:global(html[data-theme='night']) :is(.leftCol, .rightCol) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) :is(.monthTitle, .weekdays span, .listTitle, .empty) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) :is(.monthBtn, .dayCell, .form, .eventCard) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+}
+:global(html[data-theme='night']) .dayCell:hover,
+:global(html[data-theme='night']) .monthBtn:hover {
+  color: var(--night-glass-foreground);
+  background: rgba(173, 219, 255, 0.2);
+  border-color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .selected,
+:global(html[data-theme='night']) .selected:hover {
+  color: #FFF9B8;
+  background: #4A2300;
+  border-color: #4A2300;
+}
+:global(html[data-theme='night']) .today {
+  border-color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) :is(.titleInput, .dateInput, .timeInput, .selectInput, .customValueInput, .customUnitInput) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+  caret-color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .titleInput::placeholder {
+  color: var(--night-glass-foreground);
+  opacity: 1;
+}
+:global(html[data-theme='night']) :is(.eventTitle, .eventMeta) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .deleteBtn,
+:global(html[data-theme='night']) .deleteBtn:hover {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .closeBtn {
+  color: #7FA9D1;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px #7FA9D1;
+}
+:global(html[data-theme='night']) .closeBtn:hover {
+  color: #BFE6FF;
+  background: rgba(173, 219, 255, 0.15);
+  box-shadow: inset 0 0 0 2px #BFE6FF;
+}
+:global(html[data-theme='night']) .closeBtn:active {
+  color: #4A2300;
+  background: #ADDBFF;
+  box-shadow: inset 0 0 0 2px #ADDBFF;
+}
+:global(html[data-theme='night']) :is(.closeBtn, .monthBtn, .dayCell, .deleteBtn):focus-visible {
+  outline: 2px solid #FFF9B8;
+  outline-offset: 2px;
+}
+:global(html[data-theme='night']) .modalBox {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) .modalSubtitle {
+  color: var(--night-glass-foreground);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) :is(.panel, .leftCol, .rightCol, .modalBox) {
+    background: var(--night-glass-fallback);
+  }
+}

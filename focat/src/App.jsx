@@ -5,6 +5,7 @@ import { useSettings }     from './hooks/useSettings'
 import { useMusicPlayer }  from './hooks/useMusicPlayer'
 import { useClickFeedback } from './hooks/useClickFeedback'
 import { useEventStore }   from './hooks/useEventStore'
+import { useAutoTheme }    from './hooks/useAutoTheme'
 
 import LoadingScreen  from './components/LoadingScreen'
 import TitleBar       from './components/TitleBar'
@@ -29,6 +30,7 @@ function ordinal(d) {
 }
 
 export default function App() {
+  useAutoTheme()
   const [appReady,     setAppReady]     = useState(false)
   const [needsSetup,   setNeedsSetup]   = useState(false)
   const [userName,     setUserName]     = useState('')
@@ -121,16 +123,10 @@ export default function App() {
     setFocusMode(false)
   }
 
-  // Called from FocusScreen "Yes" (stop timer) — resets timer then collapses
-  function handleStopAndExitFocus() {
-    timer.reset()
-    setFocusMode(false)
-  }
-
-  // Mark done inside focus screen WITHOUT resetting timer (let user decide)
+  // Completing the active task is the one action that stops its timer.
   function handleFocusCheckDone(taskId, subtaskId) {
     store.markSubtaskDone(taskId, subtaskId, timer.elapsed)
-    // Don't reset timer here — user will choose Yes or Start Next
+    if (timer.activeId === subtaskId) timer.reset()
   }
 
   // "Start the next task" — stay on focus screen
@@ -196,7 +192,6 @@ export default function App() {
           onCheckDone={handleFocusCheckDone}
           onNextTask={handleNextTask}
           onExit={handleExitFocus}
-          onStopAndExit={handleStopAndExitFocus}
         />
       )}
 

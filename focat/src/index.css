@@ -13,6 +13,134 @@
   --text-med:     #8A6800;
   --text-light:   #B89030;
   --font:         'Gaegu', cursive;
+
+  /* Daylight semantic tokens — values mirror the existing UI exactly. */
+  --app-background: #ffed65;
+  --screen-background: #FFE656;
+  --header-text: #987700;
+  --timer-digits: #000000;
+  --panel-background: #fff8cd;
+  --panel-border: #fadd37;
+  --card-background: #FFFFFF;
+  --soft-card-background: #FFFADB;
+  --selected-card-background: #FFF8D0;
+  --input-placeholder: #C8A820;
+  --control-pill-background: rgba(255, 255, 255, 0.64);
+  --control-pill-border: rgba(164, 107, 60, 0.14);
+  --control-shadow: rgba(92, 68, 0, 0.14);
+  --play-button-background: #a46b3c;
+  --play-button-foreground: #FFFFFF;
+  --play-button-hover: #8f5b33;
+  --control-hover-background: #fff8eb;
+  --control-active: #d99b2b;
+  --focus-background-fallback: #fff6ad;
+  --focus-timer: #a46b3c;
+  --focus-quote: #e8985a;
+  --focus-card-background: #FFFFFF;
+  --focus-card-shadow: rgba(128, 83, 43, 0.1);
+  --focus-task-name: #a46b3c;
+  --focus-task-status: #a46b3c;
+  --focus-checkbox-background: #e5e5e5;
+  --focus-checkbox-border: #a46b3c;
+  --focus-edit: #a46b3c;
+  --focus-control-background: rgba(255, 255, 255, 0.64);
+  --focus-control-foreground: #a46b3c;
+  --focus-selected-background: #a46b3c;
+  --focus-selected-foreground: #FFFFFF;
+  --night-panel-background: #7FA9D1;
+  --icon-idle: var(--text-dark);
+  --icon-hover: var(--text-dark);
+  --icon-hover-background: rgba(255, 255, 255, 0.3);
+  --icon-pressed-background: var(--screen-background);
+  --icon-pressed-foreground: var(--text-dark);
+  --search-background: var(--soft-card-background);
+  --search-foreground: var(--text-dark);
+  --app-window-border: transparent;
+  --starry-night-image: none;
+  --theme-transition-duration: 5s;
+}
+
+:root[data-theme='night'] {
+  color-scheme: dark;
+  --night-glass-fill: rgba(0, 26, 64, 0.68);
+  --night-glass-card-fill: rgba(173, 219, 255, 0.12);
+  --night-glass-fallback: rgba(10, 42, 92, 0.92);
+  --night-glass-border: rgba(173, 219, 255, 0.35);
+  --night-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --night-glass-filter: blur(16px) saturate(140%);
+  --night-glass-foreground: #FFF9B8;
+  --starry-night-image: url('/assets/backgrounds/starry-night.png');
+  --ring-empty: #ADDBFF;
+  --ring-fill: #FFF9B8;
+  --border: #ADDBFF;
+  --time-color: #FFF9B8;
+  --text-dark: #FFF9B8;
+  --text-med: #FFF9B8;
+  --text-light: #FFF9B8;
+  --app-background: #001A40;
+  --screen-background: #001A40;
+  --header-text: #FFF9B8;
+  --timer-digits: #FFF9B8;
+  --panel-background: var(--night-glass-fill);
+  --panel-border: var(--night-glass-border);
+  --card-background: var(--night-glass-card-fill);
+  --soft-card-background: var(--night-glass-fill);
+  --selected-card-background: var(--night-glass-card-fill);
+  --input-placeholder: #FFF9B8;
+  --control-pill-background: var(--night-glass-fill);
+  --control-pill-border: var(--night-glass-border);
+  --control-shadow: rgba(0, 0, 0, 0.25);
+  --play-button-background: #FFF9B8;
+  --play-button-foreground: #001A40;
+  --play-button-hover: #FFF3A3;
+  --control-hover-background: rgba(173, 219, 255, 0.12);
+  --control-active: #FFF9B8;
+  --focus-background-fallback: #001A40;
+  --focus-timer: #FFF9B8;
+  --focus-quote: #FFF3A3;
+  --focus-card-background: var(--night-glass-fill);
+  --focus-card-shadow: rgba(0, 0, 0, 0.25);
+  --focus-task-name: #FFF9B8;
+  --focus-task-status: #FFF9B8;
+  --focus-checkbox-background: transparent;
+  --focus-checkbox-border: #FFF9B8;
+  --focus-edit: #FFF9B8;
+  --focus-control-background: var(--night-glass-fill);
+  --focus-control-foreground: #FFF9B8;
+  --focus-selected-background: #4A2300;
+  --focus-selected-foreground: #FFF9B8;
+  --night-panel-background: #7FA9D1;
+  --icon-idle: #7FA9D1;
+  --icon-hover: #BFE6FF;
+  --icon-hover-background: rgba(173, 219, 255, 0.15);
+  --icon-pressed-background: #ADDBFF;
+  --icon-pressed-foreground: #4A2300;
+  --search-background: var(--night-glass-fill);
+  --search-foreground: #FFF9B8;
+  --app-window-border: #ADDBFF;
+}
+
+:root[data-theme='night'] button:focus-visible,
+:root[data-theme='night'] [role='button']:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+:root[data-theme-transitioning='true'] *,
+:root[data-theme-transitioning='true'] *::before,
+:root[data-theme-transitioning='true'] *::after {
+  transition-property: color, background-color, border-color, box-shadow, fill, stroke, backdrop-filter, -webkit-backdrop-filter;
+  transition-duration: var(--theme-transition-duration);
+  transition-timing-function: ease-in-out;
+}
+
+:root[data-theme-transitioning='true'] :is(button, [role='button']):hover,
+:root[data-theme-transitioning='true'] :is(button, [role='button']):active {
+  transition-duration: 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --theme-transition-duration: 0s; }
 }
 body {
   cursor: url('../public/cursors/White-Cat-Paw.cur'), auto;

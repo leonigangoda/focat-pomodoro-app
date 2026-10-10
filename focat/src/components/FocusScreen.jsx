@@ -10,7 +10,6 @@ export default function FocusScreen({
   onCheckDone,
   onNextTask,
   onExit,
-  onStopAndExit,
 }) {
   const [earlyPrompt, setEarlyPrompt] = useState(false)
   const [exiting, setExiting] = useState(false)
@@ -24,10 +23,10 @@ export default function FocusScreen({
     setEarlyPrompt(false)
   }, [activeSubtask?.id])
 
-  function triggerExit(stopTimer) {
+  function triggerExit() {
     setExiting(true)
     setTimeout(() => {
-      stopTimer ? onStopAndExit() : onExit()
+      onExit()
     }, 420)
   }
 
@@ -72,7 +71,7 @@ export default function FocusScreen({
           </div>
         </div>
 
-        <button className={styles.editButton} onClick={() => triggerExit(false)} title="Edit task" aria-label="Edit task">
+        <button className={styles.editButton} onClick={triggerExit} title="Edit task" aria-label="Edit task">
           <svg viewBox="0 0 32 32" aria-hidden="true">
             <path d="M7 23.5 8.4 17 22.7 2.7a2.5 2.5 0 0 1 3.6 0l1 1a2.5 2.5 0 0 1 0 3.6L13 21.6 7 23.5Z" />
             <path d="m20.8 4.6 6.6 6.6M16 25.5h11" />
@@ -81,9 +80,8 @@ export default function FocusScreen({
 
         {earlyPrompt && !exiting && (
           <div className={styles.earlyPrompt}>
-            <span className={styles.earlyQuestion}>Stop timer?</span>
+            <span className={styles.earlyQuestion}>Task completed</span>
             <div className={styles.earlyActions}>
-              <button className={styles.earlyBtnYes} onClick={() => triggerExit(true)}>Yes</button>
               <button className={styles.earlyBtnNext} onClick={handleNextTask}>Start the next task</button>
             </div>
           </div>
@@ -95,7 +93,7 @@ export default function FocusScreen({
         <span>than Perfect</span>
       </p>
 
-      <button className={styles.collapseBtn} onClick={() => triggerExit(false)} title="Exit focus mode" aria-label="Exit focus mode">
+      <button className={styles.collapseBtn} onClick={triggerExit} title="Exit focus mode" aria-label="Exit focus mode">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <polyline points="4 14 10 14 10 20" />
           <polyline points="20 10 14 10 14 4" />
@@ -144,10 +142,21 @@ export default function FocusScreen({
           </button>
         ))}
 
-        <button className={styles.roundControl} onClick={timer.reset} title="Reset timer" aria-label="Reset timer" disabled={timer.state === 'idle'}>
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-            <path d="M3 3v5h5" />
+        <button className={styles.roundControl} onClick={timer.replay} title="Replay timer" aria-label="Replay timer" disabled={timer.state === 'idle'}>
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ fill: 'none' }}
+            aria-hidden="true"
+          >
+            <path d="M21 12a9 9 0 1 1-2.64-6.36L21 8" />
+            <path d="M21 3v5h-5" />
           </svg>
         </button>
       </div>

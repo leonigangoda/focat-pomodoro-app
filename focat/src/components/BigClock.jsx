@@ -22,8 +22,8 @@ export default function BigClock({ timer, catAccessory, large = false }) {
     : ''
 
   // Ring colors during break — use a calm teal instead of gold
-  const ringTrackColor   = timer.isBreak ? '#78C8B0' : '#EFCB00'
-  const ringFillColor    = timer.isBreak ? '#3D9B82' : '#9F8700'
+  const ringTrackColor   = timer.isBreak ? '#78C8B0' : 'var(--ring-empty)'
+  const ringFillColor    = timer.isBreak ? '#3D9B82' : 'var(--ring-fill)'
 
   return (
     <div className={`${styles.clockContainer} ${large ? styles.largeContainer : ''}`}>
@@ -101,9 +101,8 @@ export default function BigClock({ timer, catAccessory, large = false }) {
         </div>
       </div>
 
-      {/* Control Buttons */}
+      {/* Timer controls */}
       <div className={styles.controls}>
-        {/* Play / Pause */}
         <button
           className={`${styles.controlBtn} ${large ? styles.controlBtnLarge : ''}`}
           onClick={isRunning ? timer.pause : timer.resume}
@@ -120,22 +119,6 @@ export default function BigClock({ timer, catAccessory, large = false }) {
           )}
         </button>
 
-        {/* Reset */}
-        <button
-          className={`${styles.controlBtn} ${large ? styles.controlBtnLarge : ''}`}
-          onClick={timer.reset}
-          title="Reset"
-          disabled={timer.state === 'idle'}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-            <path d="M3 3v5h5" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Mode Selector Buttons */}
-      <div className={styles.modes}>
         {[25, 50].map(mode => {
           const isSelected = timer.selectedMode === mode
           return (
@@ -156,6 +139,19 @@ export default function BigClock({ timer, catAccessory, large = false }) {
             </button>
           )
         })}
+
+        <button
+          className={`${styles.controlBtn} ${large ? styles.controlBtnLarge : ''}`}
+          onClick={timer.replay}
+          title="Restart"
+          aria-label="Restart timer"
+          disabled={timer.state === 'idle'}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36L21 8" />
+            <path d="M21 3v5h-5" />
+          </svg>
+        </button>
       </div>
     </div>
   )

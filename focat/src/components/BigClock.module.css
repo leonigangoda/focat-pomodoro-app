@@ -43,13 +43,13 @@
   font-family: 'Gaegu', cursive;
   font-size: 52px;
   font-weight: 700;
-  color: #000000;
+  color: var(--timer-digits);
   letter-spacing: 2px;
   line-height: 1;
   transition: color 0.4s ease;
 }
 
-.gold       { color: #9F8700; }
+.gold       { color: var(--ring-fill); }
 .breakDigits { color: #3D9B82; }
 .overtime {
   color: #f71647;
@@ -102,29 +102,34 @@
 .controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 7px;
+  padding: 7px;
+  border: 1px solid var(--control-pill-border);
+  border-radius: 999px;
+  background: var(--focus-control-background);
+  box-shadow: 0 7px 22px var(--control-shadow);
+  backdrop-filter: blur(8px);
 }
 
 .controlBtn {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #FFFFFF;
-  border: 2px solid #FFEF95;
+  background: transparent;
+  border: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5C4400;
+  color: var(--focus-control-foreground);
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
   transition: all 0.15s ease;
 }
 
 .controlBtn:hover:not(:disabled) {
-  transform: scale(1.08);
-  background: #FFFCEB;
-  border-color: #EFCB00;
-  color: #9F8700;
+  transform: scale(1.06);
+  background: var(--white);
+  color: var(--focus-control-foreground);
 }
 
 .controlBtn:active:not(:disabled) {
@@ -163,16 +168,16 @@
 
 /* Base mode button — matches control button height/radius/font */
 .modeBtn {
-  height: 38px;
-  padding: 0 18px;
-  border-radius: 30px;
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 999px;
   font-family: 'Gaegu', cursive;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.3px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .modeBtn:active:not(:disabled) {
@@ -187,27 +192,25 @@
 
 /* Selected state (standard layout) */
 .modeBtnSelected {
-  background: #9F8700;
-  border: 2px solid #9F8700;
-  color: #FFFFFF;
+  background: var(--focus-selected-background);
+  border: 0;
+  color: var(--focus-selected-foreground);
 }
 .modeBtnSelected:hover:not(:disabled) {
-  background: #8A7000;
-  border-color: #8A7000;
-  transform: scale(1.05);
+  background: var(--focus-selected-background);
+  transform: none;
 }
 
 /* Inactive state (standard layout) */
 .modeBtnInactive {
-  background: #FFFFFF;
-  border: 2px solid #FFEF95;
-  color: #8A6800;
+  background: transparent;
+  border: 0;
+  color: var(--focus-control-foreground);
 }
 .modeBtnInactive:hover:not(:disabled) {
-  background: #FFFCEB;
-  border-color: #EFCB00;
-  color: #9F8700;
-  transform: scale(1.05);
+  background: var(--white);
+  color: var(--focus-control-foreground);
+  transform: none;
 }
 
 /* Large (focus mode) mode button */
@@ -240,4 +243,44 @@
   border-color: rgba(255, 255, 255, 0.4);
   color: rgba(255, 255, 255, 0.85);
   transform: scale(1.05);
+}
+
+:global(html[data-theme='night']) :is(.breakDigits, .breakLabel) {
+  color: #FFF9B8;
+}
+:global(html[data-theme='night']) .timerDigits {
+  text-shadow:
+    -1px 0 #001A40,
+    1px 0 #001A40,
+    0 -1px #001A40,
+    0 1px #001A40,
+    0 2px 8px rgba(0, 26, 64, 0.6);
+}
+:global(html[data-theme='night']) .ring {
+  filter:
+    drop-shadow(0 1px 1px #001A40)
+    drop-shadow(0 2px 8px rgba(0, 26, 64, 0.6));
+}
+:global(html[data-theme='night']) .controls {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) :is(.controlBtn, .modeBtnInactive) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) :is(.controlBtn, .modeBtnInactive):hover:not(:disabled) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+:global(html[data-theme='night']) :is(.controlBtn, .modeBtn):focus-visible {
+  outline: 2px solid #FFF9B8;
+  outline-offset: 2px;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) .controls { background: var(--night-glass-fallback); }
 }

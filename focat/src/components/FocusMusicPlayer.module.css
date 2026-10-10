@@ -1,21 +1,21 @@
 .player {
   width: 100%; height: 54px; padding: 7px 10px;
   display: flex; align-items: center; gap: 4px;
-  border: 1px solid rgba(164,107,60,.14); border-radius: 999px;
-  color: #a46b3c; background: rgba(255,255,255,.7);
-  box-shadow: 0 7px 22px rgba(164,107,60,.14); backdrop-filter: blur(9px);
+  border: 1px solid var(--control-pill-border); border-radius: 999px;
+  color: var(--focus-control-foreground); background: var(--focus-control-background);
+  box-shadow: 0 7px 22px var(--control-shadow); backdrop-filter: blur(9px);
 }
 .iconButton, .playButton {
   flex: 0 0 auto; display: grid; place-items: center; border: 0; border-radius: 50%;
-  color: #a46b3c; background: transparent;
+  color: var(--focus-control-foreground); background: transparent;
 }
 .iconButton { width: 31px; height: 31px; }
-.playButton { width: 38px; height: 38px; color: white; background: #a46b3c; box-shadow: 0 3px 9px rgba(164,107,60,.24); }
+.playButton { width: 38px; height: 38px; color: var(--play-button-foreground); background: var(--play-button-background); box-shadow: 0 3px 9px var(--control-shadow); }
 .iconButton svg { width: 16px; height: 16px; fill: currentColor; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .playButton svg { width: 17px; height: 17px; fill: currentColor; }
-.iconButton:hover { background: #fff8eb; transform: scale(1.06); }
-.playButton:hover { background: #8f5b33; transform: scale(1.05); }
-.active { color: #d99b2b; background: #fff8eb; }
+.iconButton:hover { background: var(--control-hover-background); transform: scale(1.06); }
+.playButton:hover { background: var(--play-button-hover); transform: scale(1.05); }
+.active { color: var(--control-active); background: var(--control-hover-background); }
 .trackName {
   min-width: 44px; flex: 1; margin: 0 6px; overflow: hidden;
   font-family: 'Gaegu', cursive; font-size: 16px; font-weight: 700;
@@ -23,5 +23,34 @@
 }
 .volumeWrap { flex: 0 0 auto; display: flex; align-items: center; }
 .volumeOpen { gap: 3px; }
-.volumeSlider { width: clamp(50px, 7vw, 84px); accent-color: #a46b3c; cursor: pointer; }
+.volumeSlider { width: clamp(50px, 7vw, 84px); accent-color: var(--focus-control-foreground); cursor: pointer; }
 @media (max-width: 680px) { .player { height: 52px; } .trackName { font-size: 15px; } }
+
+:global(html[data-theme='night']) .playButton,
+:global(html[data-theme='night']) .playButton:hover {
+  color: #001A40;
+}
+:global(html[data-theme='night']) .player {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) .iconButton {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .iconButton:hover,
+:global(html[data-theme='night']) .active {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+:global(html[data-theme='night']) :is(.iconButton, .playButton):focus-visible {
+  outline: 2px solid #FFF9B8;
+  outline-offset: 2px;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) .player { background: var(--night-glass-fallback); }
+}

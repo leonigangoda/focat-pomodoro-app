@@ -1,8 +1,8 @@
 .overlay {
-  --focus-brown: #a46b3c;
-  --focus-brown-dark: #8f5b33;
-  --focus-orange: #e8985a;
-  --focus-gold: #d9a52b;
+  --focus-brown: var(--focus-task-name);
+  --focus-brown-dark: var(--focus-task-name);
+  --focus-orange: var(--focus-quote);
+  --focus-gold: var(--focus-task-status);
   position: absolute;
   inset: 52px 0 0;
   z-index: 150;
@@ -15,6 +15,26 @@
     radial-gradient(ellipse at 12% 84%, rgba(255,255,255,.45) 0 4%, transparent 24%),
     linear-gradient(118deg, #fff6ad 0%, #fff9bd 43%, #fff7b1 72%, #fffbd1 100%);
   animation: focusFadeIn .48s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0;
+  background-color: var(--focus-background-fallback);
+  background-image: var(--starry-night-image);
+  background-position: center;
+  background-size: cover;
+}
+
+:global(html[data-theme='night']) .overlay::before { opacity: 1; }
+:global(html[data-theme='night']) .hill { opacity: 0; }
+:global(html[data-theme-transitioning='true']) .overlay::before,
+:global(html[data-theme-transitioning='true']) .hill {
+  transition: opacity var(--theme-transition-duration) ease-in-out;
 }
 
 .overlay.exiting { animation: focusFadeOut .42s ease-in both; }
@@ -37,41 +57,43 @@
   border-radius: 50% 50% 0 0 / 88% 88% 0 0;
   background: radial-gradient(ellipse at 48% 1%, rgba(255,244,225,.48), transparent 42%), linear-gradient(180deg, #f9d8bb 0%, #f6cfaf 100%);
   box-shadow: 0 -5px 26px rgba(239,169,112,.08);
+  opacity: 1;
 }
 
 .taskCard {
   position: absolute; top: clamp(26px, 7vh, 64px); left: clamp(24px, 5.3vw, 68px); z-index: 4;
-  width: clamp(240px, 28vw, 340px); min-height: clamp(92px, 12vh, 110px);
-  padding: 18px 50px 16px 66px; display: flex; align-items: center;
-  border-radius: 20px; background: rgba(255,255,255,.96);
-  box-shadow: 0 8px 2px rgba(164,107,60,.12), 0 14px 28px rgba(128,83,43,.12);
+  width: clamp(340px, 40vw, 400px); min-height: 114px;
+  padding: 23px 62px 19px 78px; display: flex; align-items: center;
+  border-radius: 20px; background: var(--focus-card-background);
+  box-shadow: 0 7px 2px var(--focus-card-shadow), 0 12px 24px var(--focus-card-shadow);
 }
 
 .checkCircle {
-  position: absolute; left: 18px; top: 50%; width: 30px; height: 30px; transform: translateY(-50%);
-  display: grid; place-items: center; border: 1.8px solid var(--focus-brown); border-radius: 50%;
-  color: white; background: #e7e7e7;
+  position: absolute; left: 19px; top: 50%; width: 30px; height: 30px; transform: translateY(-50%);
+  display: grid; place-items: center; border: 1.5px solid var(--focus-checkbox-border); border-radius: 50%;
+  color: var(--white); background: var(--focus-checkbox-background);
 }
 .checkCircle:not(:disabled):hover { background: #f4dfc9; transform: translateY(-50%) scale(1.08); }
 .checkCircle:not(:disabled):active { transform: translateY(calc(-50% + 3px)) scale(.96); }
 .checkCircleDone, .checkCircleDone:hover { background: var(--focus-brown); transform: translateY(-50%); }
 .taskCopy { min-width: 0; width: 100%; }
 .taskTitle {
-  overflow: hidden; color: var(--focus-brown); font-family: 'Gaegu', cursive;
-  font-size: clamp(19px, 2vw, 25px); font-weight: 700; line-height: 1.05;
-  text-overflow: ellipsis; white-space: nowrap;
+  color: var(--focus-brown); font-family: 'Gaegu', cursive;
+  font-size: 25px; font-weight: 700; line-height: 1.05;
+  white-space: normal; overflow-wrap: anywhere; word-break: normal;
 }
 .statusLabel {
-  margin-top: 6px; color: var(--focus-gold); font-family: 'Gaegu', cursive;
-  font-size: clamp(14px, 1.3vw, 18px); font-weight: 700; line-height: 1;
+  margin-top: 8px; color: var(--focus-task-status); font-family: 'Gaegu', cursive;
+  font-size: 17px; font-weight: 700; line-height: 1;
+  opacity: .9;
 }
 .statusDone { color: #7e9a64; }
 
 .editButton {
-  position: absolute; top: 13px; right: 15px; width: 22px; height: 22px;
-  padding: 2px; border: 0; color: var(--focus-brown); background: transparent;
+  position: absolute; top: 32px; right: 28px; width: 27px; height: 27px;
+  padding: 0; border: 0; color: var(--focus-edit); background: transparent;
 }
-.editButton svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.editButton svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .editButton:hover { color: var(--focus-orange); transform: rotate(-5deg) scale(1.08); }
 
 .earlyPrompt {
@@ -91,7 +113,7 @@
 .motto {
   position: absolute; top: clamp(34px, 7.4vh, 68px); right: clamp(72px, 7.4vw, 102px); z-index: 3;
   margin: 0; color: var(--focus-orange); font-family: 'Gaegu', cursive;
-  font-size: clamp(26px, 3.2vw, 40px); font-weight: 700; line-height: .8; letter-spacing: 1px; text-align: center;
+  font-size: 25px; font-weight: 700; line-height: .9; letter-spacing: 1px; text-align: center;
 }
 .motto span { display: block; }
 
@@ -105,7 +127,7 @@
 
 .timerArea { position: absolute; z-index: 2; top: clamp(205px, 34vh, 300px); left: 50%; transform: translate(-50%, -50%); text-align: center; }
 .timerDigits {
-  color: var(--focus-brown); font-family: 'Gaegu', cursive; font-size: clamp(105px, 17vw, 220px);
+  color: var(--focus-timer); font-family: 'Gaegu', cursive; font-size: clamp(105px, 17vw, 220px);
   font-weight: 700; line-height: .75; letter-spacing: clamp(1px, .45vw, 6px); white-space: nowrap;
   text-shadow: 0 2px 0 rgba(255,255,255,.1);
 }
@@ -123,24 +145,24 @@
 .sessionControls {
   position: absolute; z-index: 5; top: clamp(310px, 51vh, 430px); left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: 7px; padding: 7px;
-  border: 1px solid rgba(164,107,60,.14); border-radius: 999px; background: rgba(255,255,255,.64);
-  box-shadow: 0 7px 22px rgba(164,107,60,.14); backdrop-filter: blur(8px);
+  border: 1px solid var(--control-pill-border); border-radius: 999px; background: var(--focus-control-background);
+  box-shadow: 0 7px 22px var(--control-shadow); backdrop-filter: blur(8px);
 }
-.roundControl, .modeButton { height: 32px; border: 0; color: var(--focus-brown); background: transparent; }
+.roundControl, .modeButton { height: 32px; border: 0; color: var(--focus-control-foreground); background: transparent; }
 .roundControl { width: 32px; display: grid; place-items: center; border-radius: 50%; }
 .roundControl svg { width: 15px; height: 15px; fill: currentColor; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
 .roundControl:disabled, .modeButton:disabled { opacity: .38; }
 .roundControl:hover:not(:disabled) { background: #fff8eb; transform: scale(1.06); }
 .modeButton { padding: 0 11px; border-radius: 999px; font-size: 14px; font-weight: 700; }
 .modeButton:hover:not(:disabled) { background: #fff8eb; }
-.modeSelected { color: white; background: var(--focus-brown); }
-.modeSelected:hover:not(:disabled) { background: var(--focus-brown-dark); }
+.modeSelected { color: var(--focus-selected-foreground); background: var(--focus-selected-background); }
+.modeSelected:hover:not(:disabled) { background: var(--focus-selected-background); }
 
 .musicArea { position: absolute; z-index: 5; right: clamp(18px, 2.3vw, 30px); bottom: clamp(38px, 5vh, 52px); width: min(390px, 43vw); }
 
 @media (max-width: 850px) {
   .taskCard { left: 22px; top: 28px; width: min(39vw, 300px); padding-left: 62px; }
-  .motto { top: 42px; right: 60px; font-size: clamp(25px, 4vw, 34px); }
+  .motto { top: 42px; right: 60px; font-size: 25px; }
   .timerArea { top: 42%; }
   .timerDigits { font-size: clamp(98px, 17vw, 150px); }
   .musicArea { width: min(350px, 46vw); }
@@ -151,7 +173,7 @@
   .checkCircle { left: 16px; width: 28px; height: 28px; }
   .taskTitle { font-size: 20px; }
   .statusLabel { margin-top: 4px; font-size: 15px; }
-  .motto { top: 112px; right: 22px; font-size: 26px; }
+  .motto { top: 112px; right: 22px; font-size: 20px; }
   .timerArea { top: 43%; }
   .timerDigits { font-size: clamp(82px, 23vw, 116px); }
   .timerCat { bottom: 116px; width: 112px; }
@@ -160,7 +182,7 @@
 }
 
 @media (max-height: 650px) and (min-width: 681px) {
-  .taskCard { top: 20px; min-height: 86px; padding-top: 14px; padding-bottom: 13px; }
+  .taskCard { top: 20px; }
   .motto { top: 28px; }
   .timerArea { top: 40%; }
   .sessionControls { top: 51%; }
@@ -169,3 +191,78 @@
 }
 
 @media (prefers-reduced-motion: reduce) { .overlay, .overlay.exiting, .earlyPrompt, .overtime { animation: none; } }
+
+:global(html[data-theme='night']) .statusDone {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .breakLabel {
+  color: #FFF9B8;
+}
+:global(html[data-theme='night']) .checkCircle:not(:disabled):hover {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+:global(html[data-theme='night']) .editButton:hover {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .collapseBtn {
+  color: var(--icon-idle);
+  background: transparent;
+  border-color: var(--icon-idle);
+  box-shadow: none;
+}
+:global(html[data-theme='night']) .collapseBtn:hover {
+  color: var(--icon-hover);
+  background: var(--icon-hover-background);
+  border-color: var(--icon-hover);
+}
+:global(html[data-theme='night']) .collapseBtn:active {
+  color: var(--icon-pressed-foreground);
+  background: var(--icon-pressed-background);
+  border-color: var(--icon-pressed-background);
+}
+:global(html[data-theme='night']) .collapseBtn:focus-visible {
+  outline: 2px solid #FFF9B8;
+  outline-offset: 2px;
+}
+:global(html[data-theme='night']) :is(.roundControl, .modeButton):hover:not(:disabled) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+
+:global(html[data-theme='night']) :is(.taskCard, .sessionControls, .earlyPrompt) {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) .taskCard {
+  box-shadow: inset 0 0 0 1px var(--night-glass-border), var(--night-glass-shadow);
+}
+:global(html[data-theme='night']) :is(.taskTitle, .statusLabel, .editButton, .earlyQuestion) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .earlyBtnNext {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+}
+:global(html[data-theme='night']) .earlyBtnYes {
+  color: #FFF9B8;
+  background: #4A2300;
+  border-color: #4A2300;
+}
+:global(html[data-theme='night']) .checkCircleDone,
+:global(html[data-theme='night']) .checkCircleDone:hover {
+  color: #FFF9B8;
+  background: #4A2300;
+  border-color: #4A2300;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) :is(.taskCard, .sessionControls, .earlyPrompt) {
+    background: var(--night-glass-fallback);
+  }
+}

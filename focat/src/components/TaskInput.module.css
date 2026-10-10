@@ -1,8 +1,8 @@
 .wrap { display: flex; flex-direction: column; gap: 6px; }
 
 .bar {
-  background: #FFFADB;
-  border: 2.5px solid #EFCB00;
+  background: var(--soft-card-background);
+  border: 2.5px solid var(--ring-empty);
   border-radius: 30px;
   padding: 10px 18px;
   display: flex;
@@ -11,12 +11,12 @@
   transition: background 0.2s, border-color .2s;
 }
 .bar.active {
-  background: #FFE656;
+  background: var(--screen-background);
 }
 .bar.promptActive {
   background: #fff1a4;
 }
-.bar:focus-within { border-color: #EFCB00; }
+.bar:focus-within { border-color: var(--ring-empty); }
 
 .icon {
   flex-shrink: 0;
@@ -32,28 +32,28 @@
   font-family: 'Gaegu', cursive;
   font-size: 15px;
   font-weight: 600;
-  color: #5C4400;
+  color: var(--text-dark);
   line-height: 1.35;
   min-height: 20px;
   max-height: 81px;
   resize: none;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #EFCB00 transparent;
+  scrollbar-color: var(--ring-empty) transparent;
 }
-.input::placeholder { color: #B89030; }
+.input::placeholder { color: var(--text-light); }
 .input:disabled { opacity: .6; }
 .input::-webkit-scrollbar { width: 4px; }
 .input::-webkit-scrollbar-track { background: transparent; }
 .input::-webkit-scrollbar-thumb {
-  background: #EFCB00;
+  background: var(--ring-empty);
   border-radius: 10px;
 }
 
 .spinner {
   width: 16px; height: 16px;
-  border: 2px solid #EFCB00;
-  border-top-color: #9F8700;
+  border: 2px solid var(--ring-empty);
+  border-top-color: var(--ring-fill);
   border-radius: 50%;
   animation: spin .7s linear infinite;
   flex-shrink: 0;
@@ -69,8 +69,8 @@
 
 /* Deadline prompt card */
 .deadlineCard {
-  background: #FFFADB;
-  border: 2.5px solid #EFCB00;
+  background: var(--soft-card-background);
+  border: 2.5px solid var(--ring-empty);
   border-radius: 18px;
   padding: 14px 18px;
   display: flex;
@@ -89,7 +89,7 @@
   font-family: 'Gaegu', cursive;
   font-size: 14px;
   font-weight: 700;
-  color: #5C4400;
+  color: var(--text-dark);
 }
 
 .deadlineInputRow {
@@ -100,22 +100,22 @@
 
 .deadlineInput {
   flex: 1;
-  background: #FFFFFF;
-  border: 2px solid #FFEF95;
+  background: var(--card-background);
+  border: 2px solid var(--border);
   border-radius: 24px;
   padding: 8px 14px;
   outline: none;
   font-family: 'Gaegu', cursive;
   font-size: 14px;
   font-weight: 600;
-  color: #5C4400;
+  color: var(--text-dark);
   transition: border-color .2s;
 }
 .deadlineInput:focus {
-  border-color: #EFCB00;
+  border-color: var(--ring-empty);
 }
 .deadlineInput::placeholder {
-  color: #B89030;
+  color: var(--text-light);
   font-size: 13px;
 }
 
@@ -123,19 +123,19 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #EFCB00;
+  background: var(--ring-empty);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5C4400;
+  color: var(--text-dark);
   cursor: pointer;
   flex-shrink: 0;
   transition: all .15s;
 }
 .deadlineBtn:hover {
-  background: #9F8700;
-  color: #FFFFFF;
+  background: var(--ring-fill);
+  color: var(--white);
   transform: scale(1.06);
 }
 .deadlineBtn:active {
@@ -149,11 +149,71 @@
   font-family: 'Gaegu', cursive;
   font-size: 13px;
   font-weight: 700;
-  color: #B89030;
+  color: var(--text-light);
   cursor: pointer;
   padding: 4px 8px;
   transition: color .15s;
 }
 .skipBtn:hover {
-  color: #5C4400;
+  color: var(--text-dark);
+}
+
+:global(html[data-theme='night']) .bar,
+:global(html[data-theme='night']) .bar.active,
+:global(html[data-theme='night']) .bar.promptActive {
+  background: var(--search-background);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) .icon {
+  color: var(--search-foreground);
+}
+:global(html[data-theme='night']) .icon circle,
+:global(html[data-theme='night']) .icon line {
+  stroke: currentColor;
+}
+:global(html[data-theme='night']) .input {
+  color: var(--search-foreground);
+  caret-color: var(--search-foreground);
+}
+:global(html[data-theme='night']) .input::placeholder {
+  color: var(--search-foreground);
+  opacity: 1;
+}
+:global(html[data-theme='night']) .deadlineBtn:hover {
+  color: #001A40;
+}
+:global(html[data-theme='night']) .deadlineBtn {
+  color: #001A40;
+  background: #FFF9B8;
+}
+:global(html[data-theme='night']) .error {
+  color: #FFF9B8;
+}
+:global(html[data-theme='night']) .deadlineCard {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) :is(.deadlineLabel, .skipBtn) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .deadlineInput {
+  color: var(--night-glass-foreground);
+  caret-color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+}
+:global(html[data-theme='night']) .deadlineInput::placeholder {
+  color: var(--night-glass-foreground);
+  opacity: 1;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) :is(.bar, .deadlineCard) { background: var(--night-glass-fallback); }
 }

@@ -7,6 +7,57 @@
   position: relative;
   border-radius: 14px;
   overflow: hidden;
+  isolation: isolate;
+}
+
+:global(html[data-theme='night']) .app {
+  box-shadow: inset 0 0 0 2px var(--app-window-border);
+}
+
+:global(html[data-theme='night']) .timerBox,
+:global(html[data-theme='night']) .taskBox {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) .timerBox,
+  :global(html[data-theme='night']) .taskBox {
+    background: var(--night-glass-fallback);
+  }
+}
+
+:global(html[data-theme='night']) .timerBox {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(0) saturate(100%);
+  backdrop-filter: blur(0) saturate(100%);
+}
+
+.app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background-color: #001A40;
+  background-image: var(--starry-night-image);
+  background-position: center;
+  background-size: cover;
+}
+
+:global(html[data-theme='night']) .app::before {
+  opacity: 1;
+}
+
+:global(html[data-theme-transitioning='true']) .app::before {
+  transition: opacity var(--theme-transition-duration) ease-in-out;
 }
 
 .header {
@@ -19,7 +70,7 @@
   font-family: 'Gaegu', cursive;
   font-size: 52px;
   font-weight: 700;
-  color: #987700;
+  color: var(--header-text);
   line-height: 1;
   letter-spacing: 2px;
 }
@@ -28,7 +79,7 @@
   font-family: 'Gaegu', cursive;
   font-size: 16px;
   font-weight: 700;
-  color: #987700;
+  color: var(--header-text);
   margin-top: 4px;
   letter-spacing: .5px;
 }
@@ -51,7 +102,7 @@
 }
 
 .timerBox {
-  background: #ffed65;
+  background: var(--app-background);
   border: 2.5px solid #fffadb00;
   border-radius: 20px;
   padding: 18px;
@@ -72,9 +123,9 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--card-background) 70%, transparent);
   border: 1.5px solid rgba(159, 135, 0, 0.3);
-  color: #9F8700;
+  color: var(--ring-fill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,9 +134,9 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 .expandBtn:hover {
-  background: #FFFFFF;
-  border-color: #9F8700;
-  color: #5C4400;
+  background: var(--card-background);
+  border-color: var(--ring-fill);
+  color: var(--text-dark);
   transform: scale(1.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
 }
@@ -93,11 +144,36 @@
   transform: scale(0.94);
 }
 
+:global(html[data-theme='night']) .expandBtn {
+  color: var(--icon-idle);
+  background: transparent;
+  border-color: var(--icon-idle);
+  box-shadow: none;
+}
+:global(html[data-theme='night']) .expandBtn:hover {
+  color: var(--icon-hover);
+  background: var(--icon-hover-background);
+  border-color: var(--icon-hover);
+}
+:global(html[data-theme='night']) .expandBtn:active {
+  color: var(--icon-pressed-foreground);
+  background: var(--icon-pressed-background);
+  border-color: var(--icon-pressed-background);
+}
+:global(html[data-theme='night']) .expandBtn:focus-visible {
+  outline: 2px solid #FFF9B8;
+  outline-offset: 2px;
+}
+:global(html[data-theme='night']) .expandBtn svg {
+  filter:
+    drop-shadow(0 1px 1px #001A40)
+    drop-shadow(0 2px 8px rgba(0, 26, 64, 0.6));
+}
+
 .musicBox {
-  background: #FFEA60;
-  border: 2.5px solid #FFEF95;
-  border-radius: 20px;
-  padding: 6px;
+  background: transparent;
+  border: none;
+  padding: 0;
   width: 100%;
   display: flex;
   align-items: center;
@@ -106,8 +182,8 @@
 }
 
 .taskBox {
-  background: #fff8cd;
-  border: 2.5px solid #fadd37;
+  background: var(--panel-background);
+  border: 2.5px solid var(--panel-border);
   border-radius: 18px;
   padding: 12px;
   flex: 1;
@@ -145,8 +221,8 @@
   left: 0;
   width: 75%;
   height: calc(100% - 52px);
-  background: #FFE656;
-  border-right: 2.5px solid #FFEF95;
+  background: var(--screen-background);
+  border-right: 2.5px solid var(--border);
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
   z-index: 100;
   transform: translateX(-100%);

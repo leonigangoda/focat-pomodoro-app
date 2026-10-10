@@ -11,11 +11,11 @@
   width: 6px;
 }
 .list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--card-background) 25%, transparent);
   border-radius: 10px;
 }
 .list::-webkit-scrollbar-thumb {
-  background: #FFFFFF;
+  background: var(--card-background);
   border-radius: 10px;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .active {
-  background: #FFFFFF !important;
+  background: var(--card-background) !important;
 }
 
 .nowZone {
@@ -280,4 +280,69 @@
   border-color: #EFCB00;
   color: #9F8700;
   transform: scale(1.05);
+}
+
+:global(html[data-theme='night']) .empty,
+:global(html[data-theme='night']) .zoneLabel {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .card,
+:global(html[data-theme='night']) .active,
+:global(html[data-theme='night']) .done {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill) !important;
+  border-color: var(--night-glass-border);
+}
+:global(html[data-theme='night']) :is(.inProgress, .done) {
+  opacity: 1;
+}
+:global(html[data-theme='night']) :is(.title, .meta, .done .title, .deleteBtn) {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .editInput {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+}
+:global(html[data-theme='night']) .check {
+  color: var(--night-glass-foreground);
+  border-color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .check:hover {
+  border-color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+:global(html[data-theme='night']) .deleteBtn:hover {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+}
+:global(html[data-theme='night']) .badge {
+  color: #FFF9B8;
+  background: #4A2300;
+}
+:global(html[data-theme='night']) .modalContent {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-fill);
+  border-color: var(--night-glass-border);
+  box-shadow: var(--night-glass-shadow);
+  -webkit-backdrop-filter: var(--night-glass-filter);
+  backdrop-filter: var(--night-glass-filter);
+}
+:global(html[data-theme='night']) .modalContent p {
+  color: var(--night-glass-foreground);
+}
+:global(html[data-theme='night']) .modalYesBtn {
+  color: #FFF9B8;
+  background: #4A2300;
+  border-color: #4A2300;
+}
+:global(html[data-theme='night']) .modalNoBtn,
+:global(html[data-theme='night']) .modalNoBtn:hover {
+  color: var(--night-glass-foreground);
+  background: var(--night-glass-card-fill);
+  border-color: var(--night-glass-border);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :global(html[data-theme='night']) .modalContent { background: var(--night-glass-fallback); }
 }

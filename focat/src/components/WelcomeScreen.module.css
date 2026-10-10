@@ -1,6 +1,6 @@
 .screen {
   width: 100%; height: 100%;
-  background: #FFE656;
+  background: var(--screen-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,6 +23,13 @@
   object-fit: contain;
 }
 
+:global(html[data-theme='night']) :is(.title, .sub, .note) {
+  color: #FFF9B8;
+}
+:global(html[data-theme='night']) .btn {
+  color: #001A40;
+}
+
 /* Step indicator dots */
 .steps {
   display: flex;
@@ -34,18 +41,18 @@
 .dot {
   width: 10px; height: 10px;
   border-radius: 50%;
-  background: #EFCB00;
+  background: var(--ring-empty);
   transition: background .3s, transform .3s;
 }
 
 .dotActive {
-  background: #9F8700;
+  background: var(--ring-fill);
   transform: scale(1.15);
 }
 
 .dotLine {
   width: 32px; height: 2.5px;
-  background: #EFCB00;
+  background: var(--ring-empty);
   border-radius: 2px;
 }
 
@@ -68,21 +75,21 @@
   font-family: 'Gaegu', cursive;
   font-size: 28px;
   font-weight: 700;
-  color: #5C4400;
+  color: var(--text-dark);
   text-align: center;
 }
 
 .sub {
   font-family: 'Gaegu', cursive;
   font-size: 15px;
-  color: #9F8700;
+  color: var(--time-color);
   text-align: center;
   max-width: 340px;
   line-height: 1.5;
 }
 
 .sub strong {
-  color: #5C4400;
+  color: var(--text-dark);
   font-weight: 700;
 }
 
@@ -90,18 +97,18 @@
   width: 100%;
   max-width: 360px;
   padding: 12px 20px;
-  border: 2.5px solid #EFCB00;
+  border: 2.5px solid var(--ring-empty);
   border-radius: 30px;
-  background: #FFFFFF;
+  background: var(--card-background);
   font-family: 'Gaegu', cursive;
   font-size: 16px;
-  color: #5C4400;
+  color: var(--text-dark);
   outline: none;
   text-align: center;
   transition: border-color .2s;
 }
-.input:focus { border-color: #9F8700; }
-.input::placeholder { color: #C8A820; }
+.input:focus { border-color: var(--ring-fill); }
+.input::placeholder { color: var(--input-placeholder); }
 
 .patterns {
   display: grid;
@@ -113,18 +120,18 @@
 .patternCard {
   min-height: 92px;
   padding: 12px 14px;
-  border: 2.5px solid #EFCB00;
+  border: 2.5px solid var(--ring-empty);
   border-radius: 8px;
-  background: #FFFFFF;
-  color: #5C4400;
+  background: var(--card-background);
+  color: var(--text-dark);
   font-family: 'Gaegu', cursive;
   text-align: left;
   cursor: pointer;
   transition: background .15s, border-color .15s, transform .1s;
 }
 .patternCard:hover {
-  background: #FFF8D0;
-  border-color: #9F8700;
+  background: var(--selected-card-background);
+  border-color: var(--ring-fill);
   transform: translateY(-1px);
 }
 .patternCard:active {
@@ -132,8 +139,8 @@
   box-shadow: inset 0 3px 0 rgba(92, 68, 0, 0.16), 0 1px 1px rgba(0, 0, 0, 0.08);
 }
 .patternCardActive {
-  background: #FFF8D0;
-  border-color: #5C4400;
+  background: var(--selected-card-background);
+  border-color: var(--text-dark);
 }
 .patternName {
   display: block;
@@ -146,7 +153,7 @@
   margin-top: 6px;
   font-size: 13px;
   line-height: 1.25;
-  color: #8A7000;
+  color: var(--text-med);
 }
 
 .btnRow {
@@ -156,8 +163,8 @@
 }
 
 .btn {
-  background: #9F8700;
-  color: #FFFFFF;
+  background: var(--ring-fill);
+  color: var(--white);
   border: none;
   border-radius: 30px;
   padding: 12px 36px;
@@ -176,8 +183,8 @@
 
 .btnBack {
   background: transparent;
-  color: #9F8700;
-  border: 2px solid #EFCB00;
+  color: var(--time-color);
+  border: 2px solid var(--ring-empty);
   border-radius: 30px;
   padding: 10px 24px;
   font-family: 'Gaegu', cursive;
@@ -186,7 +193,7 @@
   cursor: pointer;
   transition: border-color .15s;
 }
-.btnBack:hover:not(:disabled) { border-color: #9F8700; }
+.btnBack:hover:not(:disabled) { border-color: var(--ring-fill); }
 .btnBack:active:not(:disabled) {
   transform: translateY(4px) scale(0.98);
   box-shadow: inset 0 3px 0 rgba(92, 68, 0, 0.16), 0 1px 1px rgba(0, 0, 0, 0.08);
@@ -206,7 +213,7 @@
 .note {
   font-family: 'Gaegu', cursive;
   font-size: 12px;
-  color: #B89030;
+  color: var(--text-light);
   text-align: center;
   line-height: 1.6;
   margin-top: 4px;

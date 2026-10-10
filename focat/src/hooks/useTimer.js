@@ -97,6 +97,23 @@ export function useTimer() {
     wasOvertimeRef.current = false
   }, [])
 
+  // Replay the current focus session from 00:00 without dropping the active task.
+  // Do not clear the interval here: when already running, the existing tick keeps
+  // going; when paused or overtime, switching to running starts a fresh interval.
+  const replay = useCallback(() => {
+    const modeToApply = pendingModeRef.current ?? selectedModeRef.current
+    pendingModeRef.current = null
+    setElapsed(0)
+    setDuration(modeToApply * 60)
+    durationRef.current = modeToApply * 60
+    setSelectedMode(modeToApply)
+    selectedModeRef.current = modeToApply
+    setIsBreak(false)
+    isBreakRef.current = false
+    setState('running')
+    wasOvertimeRef.current = false
+  }, [])
+
   // changeMode — sets the preferred focus duration.
   // Disabled during a break. If idle, applies immediately; otherwise queues it.
   const changeMode = useCallback((mode) => {
@@ -180,6 +197,7 @@ export function useTimer() {
     pause,
     resume,
     reset,
+    replay,
     changeMode,
   }
 }
