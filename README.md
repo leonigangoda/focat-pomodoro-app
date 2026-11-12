@@ -26,9 +26,9 @@ Setup asks for exactly two things: your name, and your learning style (visual, a
 
 ## Core Features
 
-**Task decomposition (Groq-powered)** :
+**Task decomposition (Gemini-powered)** :
 
-Type a task into the home screen and it's sent to an embedded task-decomposing agent (Groq API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
+Type a task into the home screen and it's sent to an embedded task-decomposing agent (Gemini API) that breaks it down into a sequence of small, solvable steps. Vague tasks are handled by the agent directly rather than requiring a fully formed input. Tasks with very large scope are deliberately collapsed down to "what to do today" rather than surfacing the full size of the work up front.
 
 <img width="50%" height="50%" alt="image" src="https://github.com/user-attachments/assets/9846e254-21eb-46e3-94ac-c8a82298da97" />
 
